@@ -1,8 +1,8 @@
 stmt ::= expr.
-func ::= # name(\ name)*: expr
+func ::= # [name (\ name)*] : expr
 bind ::= name = expr
-expr ::= name | func | call | value | bind
-call ::= cex\(expr(\ expr)*\)
+expr ::= name | func | call | value | bind | operator
+call ::= cex\([expr(\ expr)*]\)
 cex  ::= name | \(expr\) | call
 
 
@@ -10,8 +10,44 @@ cex  ::= name | \(expr\) | call
 
 Basistypen: bool, number
 
-Basisfunktionen: bool: & | ^^
+Basisfunktionen: bool: & | ^
 number: + - * / ** %
 
-number -> bool: = < > <= >= !=
+number -> bool: == < > <= >= !=
 if(cond, s1, s2)
+
+
+Tokens:
+    )
+    (
+    #
+    .
+    =
+
+    Identifier:
+        name
+
+    Operator:
+        &
+        |
+        ^
+        +
+        -
+        *
+        /
+        **
+        %
+        <
+        <=
+        ==
+        >=
+        >
+        !=
+
+    Values:
+        1
+        2
+        3...
+
+
+Tokenizer gibt Liste 
