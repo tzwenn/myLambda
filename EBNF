@@ -1,0 +1,17 @@
+stmt ::= expr.
+func ::= # name(\ name)*: expr
+bind ::= name = expr
+expr ::= name | func | call | value | bind
+call ::= cex\(expr(\ expr)*\)
+cex  ::= name | \(expr\) | call
+
+
+() und Space sind escapeable
+
+Basistypen: bool, number
+
+Basisfunktionen: bool: & | ^^
+number: + - * / ** %
+
+number -> bool: = < > <= >= !=
+if(cond, s1, s2)
