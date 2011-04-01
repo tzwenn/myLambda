@@ -19,11 +19,12 @@ def ValueToken(self, value): # chars later
     self.value = value
 
 # Numbers are floats and ints
-NUMBER = re.compile('[0-9]+(?:\.[0-9]+)?')
+NUMBER = re.compile('\d+(?:\.\d+)?')
 
-# Can start with numbers but at least one letter or [_!|?] is required
-# everythng which is not another token should be allowed
-IDENTIFIER = re.compile('(\w*[a-zA-Z]|(\w^\d)+)(!|\?)?$') # not perfect
+# Can start letters and _
+# at least one letter or _ is required
+# ? is possible only at the end
+IDENTIFIER = re.compile('[a-zA-Z_]+\w*[\?]{0,1}')
 
 # check at first ( and ) and then #, = and .
 BASETOKEN = re.compile('\(|\)|#\|=|\.')
