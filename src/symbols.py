@@ -1,14 +1,4 @@
-
-"""
-Function checking whether an object is iterable
-
-@param i	object to be checked
-@return A boolean value whether i is an iterable object
-"""
-def isIterable(i):
-	return hasattr(i,'__iter__') or hasattr(i,'__getitem__')
-
-# ----------------------------------
+import shareds
 
 class Symbol(object):
 	pass
@@ -22,6 +12,8 @@ class Name(Expr):
 
 	def __init__(self, name):
 		Expr.__init__(self)
+		if type(value) not in (unicode, str):
+			raise TypeError, "Expected string type, but %s found" % type(value).__name__
 		self.name = name
 
 class Bind(Expr):
@@ -65,7 +57,7 @@ class Func(Expr):
 	"""
 	def __init__(self, args, dfn):
 		Expr.__init__(self)
-		if not isIterable():
+		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
 		if not isinstance(dfn, Expr):
 			raise TypeError, "Expected expression (Expr) as definition"
