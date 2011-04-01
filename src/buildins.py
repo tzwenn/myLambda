@@ -4,13 +4,13 @@ class BuildIns(object):
 	def __init__(self, evaluate):
 		self.__ev = evaluate
 		self.__buildins = {
-			'+': lambda a, b: a.value + b.value,
-			'-': lambda a, b: a.value - b.value,
-			'*': lambda a, b: a.value * b.value,
-			'/': lambda a, b: a.value / b.value,
-			'%': lambda a, b: a.value % b.value,
-			'**': lambda a, b: a.value ** b.value,
-			'if': lambda cond, yes, no: self.__ev(yes if cond.value else no),
+			'+': lambda a, b: self.__ev(a) + self.__ev(b),
+			'-': lambda a, b: self.__ev(a) - self.__ev(b),
+			'*': lambda a, b: self.__ev(a) * self.__ev(b),
+			'/': lambda a, b: self.__ev(a) / self.__ev(b),
+			'%': lambda a, b: self.__ev(a) % self.__ev(b),
+			'**': lambda a, b: self.__ev(a) ** self.__ev(b),
+			'if': lambda cond, yes, no: self.__ev(yes if self.__ev(cond) else no),
 		}
 
 
