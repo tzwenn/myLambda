@@ -1,9 +1,9 @@
 stmt ::= expr.
 func ::= # [name (\ name)*] : expr
 bind ::= name = expr
-expr ::= name | func | call | value | bind | operator
+expr ::= name | func | call | value | bind
 call ::= cex\([expr(\ expr)*]\)
-cex  ::= name | \(expr\) | call
+cex  ::= name | \(expr\) | operator | call
 
 
 () und Space sind escapeable

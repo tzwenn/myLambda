@@ -1,4 +1,10 @@
 
+"""
+Function checking whether an object is iterable
+
+@param i	object to be checked
+@return A boolean value whether i is an iterable object
+"""
 def isIterable(i):
 	return hasattr(i,'__iter__') or hasattr(i,'__getitem__')
 
@@ -18,9 +24,31 @@ class Name(Expr):
 		Expr.__init__(self)
 		self.name = name
 
+class Bind(Expr):
+	
+	"""
+	Contructor that creates a bind symbol
+
+	@param name	String value for the identifyer
+	@param bind	Expression symbol that we'd liked to be bound to
+	"""
+	def __init__(self, name, expr):
+		Expr.__init__(self)
+		if type(value) not in (unicode, str):
+			raise TypeError, "Excpected string type, but %s found" % type(value).__name__
+		self.name = name
+		if not isinstance(expr, Expr):
+			raise TypeError, "Expected expression" 
+		self.expr = expr
+
 
 class Value(Expr):
 
+	"""
+	Constructor that creates a value symbol
+
+	@param value	Numeric value represented by this symbol
+	"""
 	def __init__(self, value):
 		Expr.__init__(self)
 		if type(value) not in (int, long, float):
@@ -29,6 +57,12 @@ class Value(Expr):
 	
 class Func(Expr):
 
+	"""
+	Constructor that creates a function symbol
+
+	@param args	List of strings(!) representing the arguments
+	@param dfn	Expression symbol representing the functions definition
+	"""
 	def __init__(self, args, dfn):
 		Expr.__init__(self)
 		if not isIterable():
