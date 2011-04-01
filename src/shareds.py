@@ -1,4 +1,6 @@
 
+ValueTypes = (int, long, float)
+
 """
 Function checking whether an object is iterable
 

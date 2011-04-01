@@ -28,9 +28,9 @@ class Bind(Expr):
 		Expr.__init__(self)
 		if type(value) not in (unicode, str):
 			raise TypeError, "Excpected string type, but %s found" % type(value).__name__
-		self.name = name
 		if not isinstance(expr, Expr):
 			raise TypeError, "Expected expression" 
+		self.name = name
 		self.expr = expr
 
 
@@ -43,7 +43,7 @@ class Value(Expr):
 	"""
 	def __init__(self, value):
 		Expr.__init__(self)
-		if type(value) not in (int, long, float):
+		if type(value) not in shareds.ValueTypes:
 			raise TypeError, "Expected numeric type, but %s found" % type(value).__name__
 		self.value = value
 	
