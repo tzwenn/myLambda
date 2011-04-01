@@ -30,10 +30,9 @@ IDENTIFIER = re.compile('[a-zA-Z_]+\w*[\?]{0,1}')
 BASETOKEN = re.compile('\(|\)|#\|=|\.')
 
 # match without order
-OPERATORTOKEN = re.compile('&|\||\^|\+|\-|/|%\*{1,2}|==|>=|==|<=|!=')
+OPERATORTOKEN = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
 
 
 
-# wenn whitespace, nächsten Durchlauf
-# Note to myself: z.B. ***, denn * ist gültig und ** ist gültig, *** aber nicht. Wie unterscheiden? Mit Look-Ahead?
-# Definition von ++ = #x:x+1. sollte auch gültig sein
+# note to myself: wenn whitespace, nächsten Durchlauf
+# Definition von ++ = #x:x+1. sollte auch gültig sein, als builtin?
