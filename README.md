@@ -27,18 +27,18 @@ The # is our substitute for λ, the trailing dot marks the end of an expression.
 
 Lambda expressions can be nested like this:
 \#x: (#y: *(x y)).
-This is just a complicated way to express #x y: *(x y). It is called Currying. 
+This is just a complicated way to express #x y: *(x y). It is called Currying. The interpreter does that automatically, don't worry. 
 A lambda expression without arguments always returns itself:
 \#x: +(x 1).
 => \x: +(x 1).
 
 There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical or and so on. Quite important is the if function. It is written as:
-if(cond1 do_this_if_condition_matches). For example:
+if(cond1 do_this_if_condition_matches do_this_if_it_does_not). For example:
 greater_than_42? = #x: if(>(x 42) true).
 
 ###Function Invocations###
 To apply a given value to a function we have to type:
-#x: +(x 1) (5).
+\#x: +(x 1) (5).
 => 6.
 At first the function's identifier and than the arguments separated by whitespace.
 
