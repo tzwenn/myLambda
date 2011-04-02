@@ -35,3 +35,11 @@ class IdentifiersList(object):
 				return context[key]
 		raise NameUnboundError, "Identifier '%s' not found." % key
 
+	def __setitem__(self, key, value):
+		pass
+
+	def push(self):
+		self.__contexts.append({})
+
+	def pop(self):
+		self.__contexts.pop()
