@@ -1,9 +1,22 @@
 import lexer
 
-string = """(3**abc)&7 != 5 ; comment
-        5+4  """
+# a small tokenizer loop
+def go(string):
+    while True:
+        tokens = lexer.tokenize(string)
+        for t in tokens:
+            print t, t.__class__
 
-tokens = lexer.tokenize(string)
+        # entering loop
+        print '>',      # hold cursor in current line
+        try:
+            string = raw_input()
+        except KeyboardInterrupt:   # exit with ctrl+c
+            return
 
-for t in tokens:
-    print t
+
+print 'I show you an example:'
+go("""(3**abc)&7 != 5 ; comment
+5+4""")
+# as you can see newline ends a comment
+
