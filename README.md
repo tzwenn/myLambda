@@ -33,7 +33,7 @@ A lambda expression without arguments always returns itself:
 => \x: +(x 1).
 
 There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical or and so on. Quite important is the if function. It is written as:
-if(cond1 do_this_if_condition_matches do_this_if_it_does_not). For example:
+if(cond1 doThisIfConditionMatches doThisIfItDoesNot). For example:
 greater_than_42? = #x: if(>(x 42) true).
 
 ###Function Invocations###
