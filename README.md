@@ -1,4 +1,5 @@
 #myLambda#
+This example is written in github flavored markdown if we want to publish it later. For optimum reading experience copy and paste it into: http://github.github.com/github-flavored-markdown/preview.html
 
 ##Motivation##
 myLambda is a minimalist approach to write a functional programming language which implements not too much more than the underlying theorie, the [lambda calculus](http://en.wikipedia.org/wiki/Lambda_calculus).
