@@ -5,24 +5,27 @@ expr ::= name | func | call | value | bind
 call ::= cex\([expr(\ expr)*]\)
 cex  ::= name | \(expr\) | operator | call
 
+values are numbers only atm
 
-() und Space sind escapeable
+() und Space are escapeable
 
-Basistypen: bool, number
+Base types: bool, number
 
-Basisfunktionen: bool: & | ^
-number: + - * / ** %
+builtin functions for:
+    bool: & | ^
+    number: + - * / ** %
 
 number -> bool: == < > <= >= !=
 if(cond, s1, s2)
 
 
 Tokens:
-    )
-    (
-    #
-    .
-    =
+    BaseTokens:
+        )
+        (
+        #
+        .
+        =
 
     Identifier:
         name
