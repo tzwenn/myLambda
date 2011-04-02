@@ -1,13 +1,13 @@
-#TODO:	Convert to a function (?) returning a dictionary given an __ev-function. 
+#TODO:	Convert to a function (?) returning a dictionary given an __ev-function.
 #	Decorator possible?
 
 import shareds
 
-class BuildIns(object):
-	
+class BuiltIns(object):
+
 	def __init__(self, evaluate):
 		self.__ev = evaluate
-		self.__buildins = {
+		self.__builtins = {
 			'+': lambda a, b: self.__ev(a) + self.__ev(b),
 			'-': lambda a, b: self.__ev(a) - self.__ev(b),
 			'*': lambda a, b: self.__ev(a) * self.__ev(b),
@@ -19,4 +19,4 @@ class BuildIns(object):
 
 
 	def doIt(self, key, *args):
-		return self.__buildins[key](*args)
+		return self.__builtins[key](*args)
