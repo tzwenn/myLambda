@@ -34,7 +34,7 @@ A lambda expression without arguments always returns itself:
 
 There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical or and so on. Quite important is the if function. It is written as:
 if(cond1 do_this_if_condition_matches do_this_if_it_does_not). For example:
-greater_than_42? = #x: if(>(x 42) true).
+greater_than_42? = #x: if(>(x 42) true false).
 
 ###Function Invocations###
 To apply a given value to a function we have to type:
@@ -43,14 +43,14 @@ To apply a given value to a function we have to type:
 At first the function's identifier and than the arguments separated by whitespace.
 
 ##Binding Expressions via Identifiers##
-Everything in myLambda is a function expression. What is, let's say 3? It's just #x: 3. Or it can be expressed as #x: + (1 (#x: + (1 (#x: +(1 (#x: 0)))))). which is 0+1+1+1.
+Everything in myLambda is an expression which can be either a value or a function. So as 3. can be a numeric value, or #x: + (1 (#x: + (1 (#x: +(1 (#x: 0)))))). which is 0+1+1+1.
 
 If we want to bind an expression to a name for reusing it for example for recursion or to make the code more readable you can do it like this: 
 
 = (increment #x: +(1 x)).
 As a shortcut it is allowed to write:
 increment = #x: +(1 x).
-is_even? = #x: %(x 2).
+is_even? = #x: =(%(x 2) 0).
 sum = #x y: +(x y).
 Pi = #x: 3.14. 
 As a shortcut it is also allowed to write Pi = 3.14.
