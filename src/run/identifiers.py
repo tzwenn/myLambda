@@ -26,7 +26,7 @@ class IdentifiersList(object):
 	def __init__(self):
 		self.__contexts = [{}]
 
-	def __fitKey(self, key)
+	def __fitKey(self, key):
 		if isinstance(key, symbols.Name):
 			key = key.name
 		if type(key) not in (str, unicode):
