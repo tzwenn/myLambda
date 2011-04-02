@@ -1,15 +1,20 @@
 import re
 
 class EOFToken(object):
-  pass
+    def __str__(self):
+        return 'EOF reached'
 
 class BaseToken(object):
     def __init__(self, value):
         self.value = value
+    def __str__(self):
+        return self.value
 
 class IdentifierToken(BaseToken):
     def __init__(self, name):
         self.name = name
+    def __str__(self):
+        return self.name
 
 class OperatorToken(BaseToken):
     pass
@@ -18,10 +23,12 @@ class ValueToken(BaseToken): # chars later
     pass
 
 class WhiteSpaceToken(BaseToken):
-    pass
+    def __init__(self):
+        BaseToken.__init__(self, ' ')
 
 class CharacterToken(BaseToken):
-    pass
+    def __init__(self, value):
+        BaseToken.__init__(self, value)
 
 # Numbers are floats and ints
 NUMBER = re.compile('\d+(?:\.\d+)?')
@@ -42,38 +49,46 @@ COMMENT = re.compile(';.*') # not quite happy with comments after ;
 
 
 def tokenize(string):
+    """Generator to yield tokens"""
+
     while string:
         if string.isspace():
             yield WhiteSpaceToken()
             string = string[1:]
 
-        comment = COMMENT.match(string).group(0)
-        identifier = IDENTIFIER.match(string).group(0)
-        number = NUMBER.match(string).group(0)
-        baseToken = BASETOKEN.match(string).group(0)
-        operatorToken = OPERATORTOKEN.match(string).group(0)
+        comment = COMMENT.match(string)
+        identifier = IDENTIFIER.match(string)
+        number = NUMBER.match(string)
+        baseToken = BASETOKEN.match(string)
+        operatorToken = OPERATORTOKEN.match(string)
 
         if comment:
+            comment = comment.group(0)
             string = string[len(comment):]   # skip comments
 
         elif identifier:
+            identifier = identifier.group(0)
             yield IdentifierToken(identifier)
             string = string[len(identifier):]
 
         elif number:
-            yield NumberToken(number)
+            number = number.group(0)
+            yield ValueToken(number)
             string = string[len(number):]
 
         elif baseToken:
+            baseToken = baseToken.group(0)
             yield BaseToken(baseToken)
             string = string[len(baseToken):]
 
         elif operatorToken:
+            operatorToken = operatorToken.group(0)
             yield OperatorToken(operatorToken)
             string = string[len(operatorToken):]
 
         else:
-            yield CharacterToken(string[0])
+            yield CharacterToken(string[0]) # yields unknown char
             string = string[1:]
 
-    yield EOFToken()
+    yield EOFToken()    # we're done
+
