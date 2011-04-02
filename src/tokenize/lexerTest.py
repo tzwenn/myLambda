@@ -16,7 +16,7 @@ def go(string):
 
 
 print 'I show you an example:'
-go("""(3**abc)&7 != 5 ; comment
-5+4""")
+go("""& (!= (** (3 abc) 7) 5) ; comment
+#x: +(x 1)""")
 # as you can see newline ends a comment
 
