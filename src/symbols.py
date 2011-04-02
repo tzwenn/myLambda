@@ -63,3 +63,4 @@ class Func(Expr):
 			raise TypeError, "Expected expression (Expr) as definition"
 		self.args = args[:]
 		self.dfn = dfn
+
