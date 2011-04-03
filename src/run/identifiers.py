@@ -44,8 +44,7 @@ class IdentifiersList(object):
 
 	def __setitem__(self, key, value):
 		key = self.__fitKey(key)
-		# only Value or Function accepted (can we merge that into a class?)
-		if not (isinstance(value, Value) or isinstance(value, Func)):
+		if not isinstance(value, symbols.ReturnableFunc):
 			raise ValueError, "Expected Value or Function to be bound to an identifer."
 		if key in self.__context[-1]:
 			raise NameBoundError, "Identifier '%s' is already bound." % key

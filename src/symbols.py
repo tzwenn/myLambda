@@ -59,8 +59,35 @@ class Func(Expr):
 		Expr.__init__(self)
 		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
+		for i in len(args):
+			if type(args[i]) in (unicode, str):
+				raise TypeError, "Name of parameter %d is no string" % i + 1
 		if not isinstance(dfn, Expr):
 			raise TypeError, "Expected expression (Expr) as definition"
 		self.args = args[:]
 		self.dfn = dfn
 
+class Call(Expr):
+
+	def __init__(self, func, args):
+		Expr.__init__(self)
+		if not isinstance(func, Func):
+			raise TypeError, "Expect functions to be called"
+		if not shareds.isIterable(args):
+			raise TypeError, "Expected iterable as list of arguments"
+		for i in len(args):
+			if not isinstance(args[i], Expr):
+				raise TypeError, "Argument %d is no expression" % i + 1
+		self.func = func
+		self.args = args
+
+
+# ----------------------------
+
+class Returnable(Value, Func):
+
+	def __init__(self, p1, p2=None):
+		if p2 is not None:
+			Func.__init__(self, p1, p2)
+		else:
+			Value.__init__(p1)
