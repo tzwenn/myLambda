@@ -26,9 +26,9 @@ class Evironment(object):
 		if isinstance(symbol, symbols.Returnable): # func or value?
 			return symbol
 		if isinstance(symbol, symbold.Bind):
-			# FIXME: First unbound check, then evaluate (dummy value)?
+			key = self.identifiers.checkKey(symbol.name)
 			res = self.evaluate(symbol.expr)
-			self.identifiers[symbol.name] = res
+			self.identifiers.unsaveSet(key, res)
 			return res
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
