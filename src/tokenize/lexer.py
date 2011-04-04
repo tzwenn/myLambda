@@ -34,7 +34,7 @@ class WhiteSpaceToken(BaseToken):
 
 class CharacterToken(BaseToken):
     """is used for every other ASCII input other which isn't recognized as one of the other tokens
-    thas means in case of #x:x+1.! it will hold the !"""
+    that means in case of #x: +(x 1).! it will hold the !"""
     def __init__(self, value):
         BaseToken.__init__(self, value)
 
@@ -42,15 +42,14 @@ class CharacterToken(BaseToken):
 NUMBER = re.compile('\d+(?:\.\d+)?')
 
 # Can start with letters and _
-# at least one letter or _ is required
+# at least one letter or _ is required at the beginning of each identifier
 # ? is possible only at the end
-# ++ = #x:x+1. as builtin?
 IDENTIFIER = re.compile('[a-zA-Z_]+\w*[\?]?')
 
 # check at first ( and ) and then #, = and .
 BASETOKEN = re.compile('\(|\)|#|=|\.')
 
-# match without order
+# builtin functions
 OPERATORTOKEN = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
 
 COMMENT = re.compile(';.*') # ignore everything after a comment
@@ -70,9 +69,6 @@ def tokenize(string):
     """
 
     while string:
-        #if string.isspace():
-         #   yield WhiteSpaceToken()
-         #   string = string[1:]
 
         comment = COMMENT.match(string)
         identifier = IDENTIFIER.match(string)
@@ -104,12 +100,6 @@ def tokenize(string):
             operatorToken = operatorToken.group(0)
             yield OperatorToken(operatorToken)
             string = string[len(operatorToken):]
-        
-        elif whitespace:
-        	# TODO yields 2 tokens if a comment is in between
-        	whitespace = whitespace.group(0)
-        	yield WhiteSpaceToken()
-        	string = string[len(whitespace):]
 
         else:
             yield CharacterToken(string[0]) # yields unknown char

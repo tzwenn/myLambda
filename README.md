@@ -32,25 +32,28 @@ A lambda expression without arguments always returns itself:
 \#x: +(x 1).
 => \x: +(x 1).
 
-There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical or and so on. Quite important is the if function. It is written as:
-if(cond1 do_this_if_condition_matches do_this_if_it_does_not). For example:
+There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical OR & for logical AND and so on. Quite important is the if function. It is written as:
+if(cond1 doThisIfConditionMatches doThisIfItDoesNot). For example:
 greater_than_42? = #x: if(>(x 42) true false).
 
 ###Function Invocations###
 To apply a given value to a function we have to type:
 \#x: +(x 1) (5).
 => 6.
-At first the function's identifier and than the arguments separated by whitespace.
+
+\#x y: +(x y) (23 42).
+
+At first the lambda expression or the function's identifier (like +, &, myIdentifier etc.) and then the arguments separated by whitespace.
 
 ##Binding Expressions via Identifiers##
-Everything in myLambda is an expression which can be either a value or a function. So as 3. can be a numeric value, or #x: + (1 (#x: + (1 (#x: +(1 (#x: 0)))))). which is 0+1+1+1.
+Everything in myLambda is an expression which can be either a value or a function. So 3. can be a numeric value, or, for the science junkies, #x: +(1 (#x: +(1 (#x: +(1 (#x: 0)))))). which is 0+1+1+1.
 
 If we want to bind an expression to a name for reusing it for example for recursion or to make the code more readable you can do it like this: 
 
 = (increment #x: +(1 x)).
 As a shortcut it is allowed to write:
 increment = #x: +(1 x).
-is_even? = #x: =(%(x 2) 0).
+is_even? = #x: %(x 2).
 sum = #x y: +(x y).
 Pi = #x: 3.14. 
 As a shortcut it is also allowed to write Pi = 3.14.
