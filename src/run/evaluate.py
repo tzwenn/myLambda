@@ -15,7 +15,7 @@ class Environment(object):
 		self.builtins = BuiltIns(self.evaluate) # TODO: Throw them up there
 
 	"""
-	THE evluation function that actually gives live to the parse Symbols
+	THE evaluation function that actually gives live to the parse Symbols
 
 	@param symbol	A symbol to be evaluated
 	@returns	A Value or Function-Symbol representing the evaluations result (both joined into Returnable)
@@ -25,12 +25,15 @@ class Environment(object):
 #			raise ValueError, "Can only evaluate symbols."
 		if isinstance(symbol, symbols.Returnable): # func or value?
 			return symbol
-		if isinstance(symbol, symbols.Bind):
-			key = self.identifiers.checkKey(symbol.name)
-			res = self.evaluate(symbol.expr)
-			self.identifiers.unsaveSet(key, res)
-			return res
-		if isinstance(symbol, symbols.Name):
+		elif isinstance(symbol, symbols.Bind):
+			return self.__evBind(symbol)
+		elif isinstance(symbol, symbols.Name):
 			return self.identifiers[symbol]
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
+
+	def __evBind(self, symbol):
+		key = self.identifiers.checkKey(symbol.name)
+		res = self.evaluate(symbol.expr)
+		self.identifiers.unsaveSet(key, res)
+		return res
 

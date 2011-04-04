@@ -7,7 +7,13 @@ class Expr(Symbol):
 
 	def __init__(self):
 		Symbol.__init__(self)
-	
+
+class Returnable:
+	pass
+
+class Callable:
+	pass
+
 class Name(Expr):
 
 	def __init__(self, name):
@@ -17,7 +23,7 @@ class Name(Expr):
 		self.name = name
 
 class Bind(Expr):
-	
+
 	"""
 	Contructor that creates a bind symbol
 
@@ -33,9 +39,6 @@ class Bind(Expr):
 		self.name = name
 		self.expr = expr
 
-class Returnable:
-	pass
-
 class Value(Expr, Returnable):
 
 	"""
@@ -48,8 +51,8 @@ class Value(Expr, Returnable):
 		if type(value) not in shareds.ValueTypes:
 			raise TypeError, "Expected numeric type, but %s found" % type(value).__name__
 		self.value = value
-	
-class Func(Expr, Returnable):
+
+class Func(Expr, Returnable, Callable):
 
 	"""
 	Constructor that creates a function symbol
@@ -68,6 +71,11 @@ class Func(Expr, Returnable):
 			raise TypeError, "Expected expression (Expr) as definition"
 		self.args = args[:]
 		self.dfn = dfn
+
+class Operator(Expr, Returnable, Callable): # TODO: Change that!
+
+	def __init__(self, opcode):
+		self.opcode = opcode
 
 class Call(Expr):
 
