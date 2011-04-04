@@ -32,18 +32,21 @@ A lambda expression without arguments always returns itself:
 \#x: +(x 1).
 => \x: +(x 1).
 
-There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical or and so on. Quite important is the if function. It is written as:
+There are some builtin functions like == for equality, != for inequality, or, respectively ^ for logical OR & for logical AND and so on. Quite important is the if function. It is written as:
 if(cond1 doThisIfConditionMatches doThisIfItDoesNot). For example:
-greater_than_42? = #x: if(>(x 42) true).
+greater_than_42? = #x: if(>(x 42) true false).
 
 ###Function Invocations###
 To apply a given value to a function we have to type:
 \#x: +(x 1) (5).
 => 6.
-At first the function's identifier and than the arguments separated by whitespace.
+
+\#x y: +(x y) (23 42).
+
+At first the lambda expression or the function's identifier (like +, &, myIdentifier etc.) and then the arguments separated by whitespace.
 
 ##Binding Expressions via Identifiers##
-Everything in myLambda is a function expression. What is, let's say 3? It's just #x: 3. Or it can be expressed as #x: + (1 (#x: + (1 (#x: +(1 (#x: 0)))))). which is 0+1+1+1.
+Everything in myLambda is an expression which can be either a value or a function. So 3. can be a numeric value, or, for the science junkies, #x: +(1 (#x: +(1 (#x: +(1 (#x: 0)))))). which is 0+1+1+1.
 
 If we want to bind an expression to a name for reusing it for example for recursion or to make the code more readable you can do it like this: 
 
