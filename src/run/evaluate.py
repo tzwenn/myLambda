@@ -30,5 +30,7 @@ class Environment(object):
 			res = self.evaluate(symbol.expr)
 			self.identifiers.unsaveSet(key, res)
 			return res
+		if isinstance(symbol, symbols.Name):
+			return self.identifiers[symbol]
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
