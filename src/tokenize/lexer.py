@@ -101,12 +101,6 @@ def tokenize(string):
             yield OperatorToken(operatorToken)
             string = string[len(operatorToken):]
 
-        elif whitespace:
-            # TODO yields 2 tokens if a comment is in between
-            whitespace = whitespace.group(0)
-            yield WhiteSpaceToken()
-            string = string[len(whitespace):]
-
         else:
             yield CharacterToken(string[0]) # yields unknown char
             string = string[1:]

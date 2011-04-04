@@ -12,7 +12,7 @@ class Name(Expr):
 
 	def __init__(self, name):
 		Expr.__init__(self)
-		if type(value) not in (unicode, str):
+		if type(name) not in (unicode, str):
 			raise TypeError, "Expected string type, but %s found" % type(value).__name__
 		self.name = name
 
@@ -26,15 +26,17 @@ class Bind(Expr):
 	"""
 	def __init__(self, name, expr):
 		Expr.__init__(self)
-		if type(value) not in (unicode, str):
+		if type(name) not in (unicode, str):
 			raise TypeError, "Excpected string type, but %s found" % type(value).__name__
 		if not isinstance(expr, Expr):
 			raise TypeError, "Expected expression" 
 		self.name = name
 		self.expr = expr
 
+class Returnable:
+	pass
 
-class Value(Expr):
+class Value(Expr, Returnable):
 
 	"""
 	Constructor that creates a value symbol
@@ -47,7 +49,7 @@ class Value(Expr):
 			raise TypeError, "Expected numeric type, but %s found" % type(value).__name__
 		self.value = value
 	
-class Func(Expr):
+class Func(Expr, Returnable):
 
 	"""
 	Constructor that creates a function symbol
@@ -59,8 +61,25 @@ class Func(Expr):
 		Expr.__init__(self)
 		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
+		for i in len(args):
+			if type(args[i]) in (unicode, str):
+				raise TypeError, "Name of parameter %d is no string" % i + 1
 		if not isinstance(dfn, Expr):
 			raise TypeError, "Expected expression (Expr) as definition"
 		self.args = args[:]
 		self.dfn = dfn
+
+class Call(Expr):
+
+	def __init__(self, func, args):
+		Expr.__init__(self)
+		if not isinstance(func, Func):
+			raise TypeError, "Expect functions to be called"
+		if not shareds.isIterable(args):
+			raise TypeError, "Expected iterable as list of arguments"
+		for i in len(args):
+			if not isinstance(args[i], Expr):
+				raise TypeError, "Argument %d is no expression" % i + 1
+		self.func = func
+		self.args = args
 
