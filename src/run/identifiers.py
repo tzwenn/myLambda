@@ -44,7 +44,7 @@ class IdentifiersList(object):
 
 	def checkKey(self, key):
 		key = self.__fitKey(key)
-		if key in self.__context[-1]:
+		if key in self.__contexts[-1]:
 			raise NameBoundError, "Identifier '%s' is already bound." % key
 		return key
 
@@ -54,17 +54,17 @@ class IdentifiersList(object):
 
 	def __setitem__(self, key, value):
 		checkValue(value)
-		self.__context[-1][self.checkKey(key)] = value # Only definied in most recent context
+		self.__contexts[-1][self.checkKey(key)] = value # Only definied in most recent context
 
 	def unsaveSet(self, key, value):
-		self.__context[-1][key] = value
+		self.__contexts[-1][key] = value
 
 	def push(self):
 		self.__contexts.append({})
 
 	def pop(self):
 		# __context[0] is global and cannot be removed 
-		if len(self.__context) == 1:
+		if len(self.__contexts) == 1:
 			raise NoContextError
 		self.__contexts.pop()
 

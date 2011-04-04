@@ -1,6 +1,6 @@
 import symbols
 from builtins import BuiltIns
-from run import identifiers
+from run.identifiers import IdentifiersList
 
 """
 Exception, raised if a not yet implemented symbol is evaluated.
@@ -8,10 +8,10 @@ Exception, raised if a not yet implemented symbol is evaluated.
 class NotImplementedError(IndexError):
 	pass
 
-class Evironment(object):
+class Environment(object):
 
 	def __init__(self):
-		self.identifiers = indentifiers.IdentifiersList()
+		self.identifiers = IdentifiersList()
 		self.builtins = BuiltIns(self.evaluate) # TODO: Throw them up there
 
 	"""
@@ -25,7 +25,7 @@ class Evironment(object):
 #			raise ValueError, "Can only evaluate symbols."
 		if isinstance(symbol, symbols.Returnable): # func or value?
 			return symbol
-		if isinstance(symbol, symbold.Bind):
+		if isinstance(symbol, symbols.Bind):
 			key = self.identifiers.checkKey(symbol.name)
 			res = self.evaluate(symbol.expr)
 			self.identifiers.unsaveSet(key, res)
