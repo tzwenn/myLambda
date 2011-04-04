@@ -1,4 +1,4 @@
-import symbols # TODO: Beautify thiz!
+import symbols
 
 """
 Exception to be thrown if no more contexts can be poped.
@@ -42,13 +42,22 @@ class IdentifiersList(object):
 				return context[key]
 		raise NameUnboundError, "Identifier '%s' not found." % key
 
-	def __setitem__(self, key, value):
+	def checkKey(self, key):
 		key = self.__fitKey(key)
-		if not isinstance(value, symbols.ReturnableFunc):
-			raise ValueError, "Expected Value or Function to be bound to an identifer."
 		if key in self.__context[-1]:
 			raise NameBoundError, "Identifier '%s' is already bound." % key
-		self.__context[-1][key] = value # Only definied in most recent context
+		return key
+
+	def checkValue(self, key):
+		if not isinstance(value, symbols.ReturnableFunc):
+			raise ValueError, "Expected Value or Function to be bound to an identifer."
+
+	def __setitem__(self, key, value):
+		checkValue(value)
+		self.__context[-1][self.checkKey(key)] = value # Only definied in most recent context
+
+	def unsaveSet(self, key, value):
+		self.__context[-1][key] = value
 
 	def push(self):
 		self.__contexts.append({})
