@@ -11,7 +11,7 @@ class Expr(Symbol):
 class Returnable:
 	pass
 
-class Callable:
+class Callable: # FIXME !!!!!!!!!!!!!!!!!!!!!!!!! we need Cex (see grammar.txt)
 	pass
 
 class Name(Expr):
@@ -64,9 +64,9 @@ class Func(Expr, Returnable, Callable):
 		Expr.__init__(self)
 		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
-		for i in len(args):
-			if type(args[i]) in (unicode, str):
-				raise TypeError, "Name of parameter %d is no string" % i + 1
+		for i in xrange(len(args)):
+			if type(args[i]) not in (unicode, str):
+				raise TypeError, "Name of parameter %d is no string" % (i + 1)
 		if not isinstance(dfn, Expr):
 			raise TypeError, "Expected expression (Expr) as definition"
 		self.args = args[:]
@@ -81,13 +81,13 @@ class Call(Expr):
 
 	def __init__(self, func, args):
 		Expr.__init__(self)
-		if not isinstance(func, Func):
-			raise TypeError, "Expect functions to be called"
+		#if not isinstance(func, Callable):
+		#	raise TypeError, "Expect functions or operators to be called"
 		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
-		for i in len(args):
+		for i in xrange(len(args)):
 			if not isinstance(args[i], Expr):
-				raise TypeError, "Argument %d is no expression" % i + 1
+				raise TypeError, "Argument %d is no expression" % (i + 1)
 		self.func = func
 		self.args = args
 

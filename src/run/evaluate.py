@@ -29,6 +29,8 @@ class Environment(object):
 			return self.__evBind(symbol)
 		elif isinstance(symbol, symbols.Name):
 			return self.identifiers[symbol]
+		elif isinstance(symbol, symbols.Call):
+			return self.__evCall(symbol)
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
 	def __evBind(self, symbol):
@@ -37,3 +39,20 @@ class Environment(object):
 		self.identifiers.unsaveSet(key, res)
 		return res
 
+	def __evCall(self, symbol):
+		func = self.evaluate(symbol.func)
+		# FIXME: I assume to have a Func-Symbol
+		if len(func.args) != len(symbol.args):
+			raise TypeError, "Function takes exactly %d arguments (%d given)" % (len(func.args), len(symbol.args))
+		self.identifiers.push()
+		res = ex = None
+		try:
+			for i in xrange(len(func.args)):
+				self.identifiers.unsaveSet(func.args[i], self.evaluate(symbol.args[i]))
+			res = self.evaluate(func.dfn)
+		except Exception, ex:
+			self.identifiers.pop()
+		self.identifiers.pop()
+		if res is None:
+			raise ex
+		return res
