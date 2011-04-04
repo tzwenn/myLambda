@@ -41,14 +41,14 @@ class CharacterToken(BaseToken):
 # Numbers are floats and ints
 NUMBER = re.compile('\d+(?:\.\d+)?')
 
-# Can start letters and _
+# Can start with letters and _
 # at least one letter or _ is required
 # ? is possible only at the end
 # ++ = #x:x+1. as builtin?
-IDENTIFIER = re.compile('[a-zA-Z_]+\w*[\?]{0,1}')
+IDENTIFIER = re.compile('[a-zA-Z_]+\w*[\?]?')
 
 # check at first ( and ) and then #, = and .
-BASETOKEN = re.compile('\(|\)|#\|=|\.')
+BASETOKEN = re.compile('\(|\)|#|=|\.')
 
 # match without order
 OPERATORTOKEN = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
@@ -56,6 +56,8 @@ OPERATORTOKEN = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
 COMMENT = re.compile(';.*') # ignore everything after a comment
                             # not quite happy with comments after ;
 
+# find all whitespaces, including formfeed and vertical tab
+WHITESPACE = re.compile('\s+')
 
 def tokenize(string):
     """Generator to yield tokens
@@ -68,15 +70,16 @@ def tokenize(string):
     """
 
     while string:
-        if string.isspace():
-            yield WhiteSpaceToken()
-            string = string[1:]
+        #if string.isspace():
+         #   yield WhiteSpaceToken()
+         #   string = string[1:]
 
         comment = COMMENT.match(string)
         identifier = IDENTIFIER.match(string)
         number = NUMBER.match(string)
         baseToken = BASETOKEN.match(string)
         operatorToken = OPERATORTOKEN.match(string)
+        whitespace = WHITESPACE.match(string)
 
         if comment:
             comment = comment.group(0)
@@ -101,6 +104,12 @@ def tokenize(string):
             operatorToken = operatorToken.group(0)
             yield OperatorToken(operatorToken)
             string = string[len(operatorToken):]
+        
+        elif whitespace:
+        	# TODO yields 2 tokens if a comment is in between
+        	whitespace = whitespace.group(0)
+        	yield WhiteSpaceToken()
+        	string = string[len(whitespace):]
 
         else:
             yield CharacterToken(string[0]) # yields unknown char
