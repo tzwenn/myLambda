@@ -35,7 +35,7 @@ class Bind(Expr):
 		if type(name) not in (unicode, str):
 			raise TypeError, "Excpected string type, but %s found" % type(value).__name__
 		if not isinstance(expr, Expr):
-			raise TypeError, "Expected expression" 
+			raise TypeError, "Expected expression"
 		self.name = name
 		self.expr = expr
 
@@ -91,4 +91,3 @@ class Call(Expr):
 				raise TypeError, "Argument %d is no expression" % (i + 1)
 		self.func = func
 		self.args = args
-

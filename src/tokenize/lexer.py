@@ -100,7 +100,7 @@ def tokenize(string):
             operatorToken = operatorToken.group(0)
             yield OperatorToken(operatorToken)
             string = string[len(operatorToken):]
-        
+
         elif whitespace:
         	whitespace = whitespace.group(0)
         	yield WhiteSpaceToken()

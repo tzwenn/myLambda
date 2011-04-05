@@ -17,7 +17,7 @@ class Environment(object):
 			self.identifiers.unsaveSet(key, dfn)
 
 	"""
-	THE evaluation function that actually gives live to the parse Symbols
+	THE evaluation function that actually gives life to the parse Symbols
 
 	@param symbol	A symbol to be evaluated
 	@returns	A Value or Function-Symbol representing the evaluations result (both joined into Returnable)

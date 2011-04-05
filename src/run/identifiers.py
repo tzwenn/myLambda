@@ -1,7 +1,7 @@
 import symbols
 
 """
-Exception to be thrown if no more contexts can be poped.
+Exception to be thrown if no more contexts can be popped.
 """
 class NoContextError(ValueError):
 	pass
@@ -19,7 +19,7 @@ class NameUnboundError(KeyError):
 	pass
 
 """
-Class managing all existing identifiers in different contexts
+Class managing all existing identifiers in different Environments instances
 """
 class IdentifiersList(object):
 
@@ -63,7 +63,7 @@ class IdentifiersList(object):
 		self.__contexts.append({})
 
 	def pop(self):
-		# __context[0] is global and cannot be removed 
+		# __context[0] is global and cannot be removed
 		if len(self.__contexts) == 1:
 			raise NoContextError
 		self.__contexts.pop()
