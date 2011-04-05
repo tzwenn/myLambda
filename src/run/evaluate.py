@@ -48,7 +48,7 @@ class Environment(object):
 		if isinstance(func, BuiltIn):
 			if func.argc == 2: # FIXME: Beautify thiz
 				return func(symbol.args[0], symbol.args[1])
-			elif func.argcy == 3:
+			elif func.argc == 3:
 				return func(symbol.args[0], symbol.args[1], symbol.args[2])
 
 		self.identifiers.push()
