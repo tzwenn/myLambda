@@ -42,13 +42,13 @@ class IdentifiersList(object):
 				return context[key]
 		raise NameUnboundError, "Identifier '%s' not found." % key
 
-	def checkKey(self, key):
+	def checkKey(self, key, glob=False):
 		key = self.__fitKey(key)
-		if key in self.__contexts[-1]:
+		if key in self.__contexts[0 if glob else -1]:
 			raise NameBoundError, "Identifier '%s' is already bound." % key
 		return key
 
-	def checkValue(self, key):
+	def checkValue(self, value):
 		if not isinstance(value, symbols.ReturnableFunc):
 			raise ValueError, "Expected Value or Function to be bound to an identifer."
 
@@ -56,8 +56,8 @@ class IdentifiersList(object):
 		checkValue(value)
 		self.__contexts[-1][self.checkKey(key)] = value # Only definied in most recent context
 
-	def unsaveSet(self, key, value):
-		self.__contexts[-1][key] = value
+	def unsaveSet(self, key, value, glob=False):
+		self.__contexts[0 if glob else -1][key] = value
 
 	def push(self):
 		self.__contexts.append({})
