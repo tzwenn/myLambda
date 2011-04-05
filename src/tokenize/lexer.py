@@ -100,6 +100,11 @@ def tokenize(string):
             operatorToken = operatorToken.group(0)
             yield OperatorToken(operatorToken)
             string = string[len(operatorToken):]
+        
+        elif whitespace:
+        	whitespace = whitespace.group(0)
+        	yield WhiteSpaceToken()
+        	string = string[len(whitespace):]
 
         else:
             yield CharacterToken(string[0]) # yields unknown char
