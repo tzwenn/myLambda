@@ -34,9 +34,9 @@ class Environment(object):
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
 	def __evBind(self, symbol):
-		key = self.identifiers.checkKey(symbol.name)
+		key = self.identifiers.checkKey(symbol.name, True)
 		res = self.evaluate(symbol.expr)
-		self.identifiers.unsaveSet(key, res)
+		self.identifiers.unsaveSet(key, res, True)
 		return res
 
 	def __evCall(self, symbol):
