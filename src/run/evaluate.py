@@ -1,5 +1,5 @@
 import symbols
-from builtins import BuiltIns
+from builtins import BuiltIns, BuiltIn
 from run.identifiers import IdentifiersList
 
 """
@@ -12,7 +12,9 @@ class Environment(object):
 
 	def __init__(self):
 		self.identifiers = IdentifiersList()
-		self.builtins = BuiltIns(self.evaluate) # TODO: Throw them up there
+		self.builtins = BuiltIns(self.evaluate)
+		for key, dfn in self.builtins.funcs.iteritems():
+			self.identifiers.unsaveSet(key, dfn)
 
 	"""
 	THE evaluation function that actually gives live to the parse Symbols
@@ -41,9 +43,14 @@ class Environment(object):
 
 	def __evCall(self, symbol):
 		func = self.evaluate(symbol.func)
-		# FIXME: I assume to have a Func-Symbol
-		if len(func.args) != len(symbol.args):
-			raise TypeError, "Function takes exactly %d arguments (%d given)" % (len(func.args), len(symbol.args))
+		if func.argc != len(symbol.args):
+			raise TypeError, "Function takes exactly %d arguments (%d given)" % (func.argc, len(symbol.args))
+		if isinstance(func, BuiltIn):
+			if func.argc == 2: # FIXME: Beautify thiz
+				return func(symbol.args[0], symbol.args[1])
+			elif func.argcy == 3:
+				return func(symbol.args[0], symbol.args[1], symbol.args[2])
+
 		self.identifiers.push()
 		res = ex = None
 		try:
