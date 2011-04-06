@@ -11,4 +11,7 @@ def isIterable(i):
 	return hasattr(i,'__iter__') or hasattr(i,'__getitem__')
 
 def toBool(value):
-	return bool(value.value)	# TODO: To be extended
+	return bool(value.value)
+
+class MyLambdaErr(Exception):
+	pass

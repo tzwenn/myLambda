@@ -1,8 +1,8 @@
-#TODO:	Convert to a function (?) returning a dictionary given an __ev-function.
-#	Decorator possible?
-
-from shareds import toBool
+from shareds import toBool, MyLambdaErr
 from symbols import Value, Func
+
+class CallError(TypeError, MyLambdaErr):
+	pass
 
 class BuiltIn(Func):
 

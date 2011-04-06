@@ -1,11 +1,15 @@
 import symbols
 from builtins import BuiltIns, BuiltIn
 from run.identifiers import IdentifiersList
+from shareds import MyLambdaErr
 
 """
 Exception, raised if a not yet implemented symbol is evaluated.
 """
-class NotImplementedError(IndexError):
+class NoSystemError(IndexError, MyLambdaErr):
+	pass
+
+class ArgumentError(TypeError, MyLambdaErr):
 	pass
 
 class Environment(object):
@@ -23,8 +27,6 @@ class Environment(object):
 	@returns	A Value or Function-Symbol representing the evaluations result (both joined into Returnable)
 	"""
 	def evaluate(self, symbol):
-#		if not isinstance(symbol, symbols.Symbol):
-#			raise ValueError, "Can only evaluate symbols."
 		if isinstance(symbol, symbols.Returnable): # func or value?
 			return symbol
 		elif isinstance(symbol, symbols.Bind):
@@ -44,7 +46,7 @@ class Environment(object):
 	def __evCall(self, symbol):
 		func = self.evaluate(symbol.func)
 		if func.argc != len(symbol.args):
-			raise TypeError, "Function takes exactly %d arguments (%d given)" % (func.argc, len(symbol.args))
+			raise ArgumentError, "Function takes exactly %d arguments (%d given)" % (func.argc, len(symbol.args))
 		if isinstance(func, BuiltIn):
 			return func(symbol.args)
 

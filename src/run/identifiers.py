@@ -1,21 +1,22 @@
 import symbols
+from shareds import MyLambdaErr
 
 """
 Exception to be thrown if no more contexts can be popped.
 """
-class NoContextError(ValueError):
+class NoContextError(ValueError, MyLambdaErr):
 	pass
 
 """
 Exception, raised if a name is already bound in the current context.
 """
-class NameBoundError(NameError):
+class NameBoundError(NameError, MyLambdaErr):
 	pass
 
 """
 Exception, raised if there is no identifier of that name in the current context.
 """
-class NameUnboundError(KeyError):
+class NameUnboundError(KeyError, MyLambdaErr):
 	pass
 
 """
@@ -49,7 +50,7 @@ class IdentifiersList(object):
 		return key
 
 	def checkValue(self, value):
-		if not isinstance(value, symbols.ReturnableFunc):
+		if not isinstance(value, symbols.Returnable):
 			raise ValueError, "Expected Value or Function to be bound to an identifer."
 
 	def __setitem__(self, key, value):
