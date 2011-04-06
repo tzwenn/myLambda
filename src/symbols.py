@@ -15,12 +15,15 @@ class Callable: # FIXME !!!!!!!!!!!!!!!!!!!!!!!!! we need Cex (see grammar.txt)
 	pass
 
 class Name(Expr):
-
-	def __init__(self, name):
+    """holds a value which means a number"""
+    def __init__(self, name):
 		Expr.__init__(self)
 		if type(name) not in (unicode, str):
 			raise TypeError, "Expected string type, but %s found" % type(value).__name__
 		self.name = name
+    def __str__(self):
+        return self.name
+
 
 class Bind(Expr):
 
@@ -42,7 +45,7 @@ class Bind(Expr):
 class Value(Expr, Returnable):
 
 	"""
-	Constructor that creates a value symbol
+	Constructor that creates a value symbol which are currently numbers only
 
 	@param value	Numeric value represented by this symbol
 	"""
@@ -51,6 +54,9 @@ class Value(Expr, Returnable):
 		if type(value) not in shareds.ValueTypes:
 			raise TypeError, "Expected numeric type, but %s found" % type(value).__name__
 		self.value = value
+	def __str__(self):
+		return str(self.value)
+
 
 class Func(Expr, Returnable, Callable):
 
@@ -73,9 +79,12 @@ class Func(Expr, Returnable, Callable):
 		self.dfn = dfn
 
 class Operator(Expr, Returnable, Callable): # TODO: Change that!
+    """holds builtin functions like basic math, logic and bit manipulation"""
 
-	def __init__(self, opcode):
+    def __init__(self, opcode):
 		self.opcode = opcode
+    def __str__(self):
+        return self.opcode
 
 class Call(Expr):
 

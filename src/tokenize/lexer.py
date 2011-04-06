@@ -1,3 +1,10 @@
+"""Beware: 4 whitespaces for indentation used. If combined with spaces it will break"""
+import sys
+if not '..' in sys.path:    # makes common symbols accessible
+    sys.path.insert(0, '..')
+
+print sys.path
+import symbols
 import re
 
 class EOFToken(object):
@@ -19,14 +26,6 @@ class IdentifierToken(BaseToken):
     def __str__(self):
         return self.name
 
-class OperatorToken(BaseToken):
-    """holds builtin functions like basic math, logic and bit manipulation"""
-    pass
-
-class ValueToken(BaseToken): # chars later
-    """holds a value which means a number"""
-    pass
-
 class WhiteSpaceToken(BaseToken):
     """holds one whitespace char"""
     def __init__(self):
@@ -44,13 +43,13 @@ NUMBER = re.compile('\d+(?:\.\d+)?')
 # Can start with letters and _
 # at least one letter or _ is required at the beginning of each identifier
 # ? is possible only at the end
-IDENTIFIER = re.compile('[a-zA-Z_]+\w*[\?]?')
+NAME = re.compile('[a-zA-Z_]+\w*[\?]?')
 
 # check at first ( and ) and then #, = and .
 BASETOKEN = re.compile('\(|\)|#|=|\.')
 
 # builtin functions
-OPERATORTOKEN = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
+OPERATOR = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
 
 COMMENT = re.compile(';.*') # ignore everything after a comment
                             # not quite happy with comments after ;
@@ -71,24 +70,24 @@ def tokenize(string):
     while string:
 
         comment = COMMENT.match(string)
-        identifier = IDENTIFIER.match(string)
+        name = NAME.match(string)
         number = NUMBER.match(string)
         baseToken = BASETOKEN.match(string)
-        operatorToken = OPERATORTOKEN.match(string)
+        operator = OPERATOR.match(string)
         whitespace = WHITESPACE.match(string)
 
         if comment:
             comment = comment.group(0)
             string = string[len(comment):]   # skip comments
 
-        elif identifier:
-            identifier = identifier.group(0)
-            yield IdentifierToken(identifier)
-            string = string[len(identifier):]
+        elif name:
+            name = name.group(0)
+            yield symbols.Name(name)
+            string = string[len(name):]
 
         elif number:
             number = number.group(0)
-            yield ValueToken(number)
+            yield symbols.Value(float(number))
             string = string[len(number):]
 
         elif baseToken:
@@ -96,15 +95,15 @@ def tokenize(string):
             yield BaseToken(baseToken)
             string = string[len(baseToken):]
 
-        elif operatorToken:
-            operatorToken = operatorToken.group(0)
-            yield OperatorToken(operatorToken)
-            string = string[len(operatorToken):]
+        elif operator:
+            operator = operator.group(0)
+            yield symbols.Operator(operator)
+            string = string[len(operator):]
 
         elif whitespace:
-        	whitespace = whitespace.group(0)
-        	yield WhiteSpaceToken()
-        	string = string[len(whitespace):]
+            whitespace = whitespace.group(0)
+            yield WhiteSpaceToken()
+            string = string[len(whitespace):]
 
         else:
             yield CharacterToken(string[0]) # yields unknown char

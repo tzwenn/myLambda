@@ -18,5 +18,6 @@ def go(string):
 print 'I show you an example:'
 go("""& (!= (** (3 abc) 7) 5) ; comment
 #x: +(x 1)""")
-# as you can see newline ends a comment
-
+print go("""hi 				  d
+""")
+# as you can see newline ends a comment and thanks to Patrick it works for multiple whitespaces too
