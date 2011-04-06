@@ -76,6 +76,7 @@ class Func(Expr, Returnable, Callable):
 		if not isinstance(dfn, Expr):
 			raise TypeError, "Expected expression (Expr) as definition"
 		self.args = args[:]
+		self.argc = len(args)
 		self.dfn = dfn
 
 class Operator(Expr, Returnable, Callable): # TODO: Change that!
