@@ -59,7 +59,11 @@ class Environment(object):
 			res = self.evaluate(func.dfn)
 		except Exception, ex:
 			self.identifiers.pop()
-		self.identifiers.pop()
 		if res is None:
 			raise ex
+		self.identifiers.pop()
 		return res
+
+	def __call__(self, symbol):
+		return self.evaluate(symbol)
+
