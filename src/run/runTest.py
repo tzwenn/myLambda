@@ -26,4 +26,4 @@ _fib = Func(['n'], Call(Name('if'), [Call(Name('<='), [Name('n'), Value(1)]),
 			]))
 
 env(Bind('fib', _fib))
-print env(Call(Name('fib'), [Value(5)])).value
+print env(Call(Name('fib'), [Value(9)])).value

@@ -46,10 +46,7 @@ class Environment(object):
 		if func.argc != len(symbol.args):
 			raise TypeError, "Function takes exactly %d arguments (%d given)" % (func.argc, len(symbol.args))
 		if isinstance(func, BuiltIn):
-			if func.argc == 2: # FIXME: Beautify thiz
-				return func(symbol.args[0], symbol.args[1])
-			elif func.argc == 3:
-				return func(symbol.args[0], symbol.args[1], symbol.args[2])
+			return func(symbol.args)
 
 		self.identifiers.push()
 		res = ex = None
