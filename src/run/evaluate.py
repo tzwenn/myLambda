@@ -27,8 +27,10 @@ class Environment(object):
 	@returns	A Value or Function-Symbol representing the evaluations result (both joined into Returnable)
 	"""
 	def evaluate(self, symbol):
-		if isinstance(symbol, symbols.Returnable): # func or value?
+		if isinstance(symbol, symbols.Returnable): # func or value
 			return symbol
+		elif isinstance(symbol, symbols.Cex):
+			return self.evaluate(symbol.expr)
 		elif isinstance(symbol, symbols.Bind):
 			return self.__evBind(symbol)
 		elif isinstance(symbol, symbols.Name):

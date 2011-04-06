@@ -11,24 +11,40 @@ class Expr(Symbol):
 class Returnable:
 	pass
 
-class Callable: # FIXME !!!!!!!!!!!!!!!!!!!!!!!!! we need Cex (see grammar.txt)
+class Callable:
 	pass
 
+class Cex(Expr):
+
+	"""
+	Constructor that creates a callable Expression.
+	This is a FORWARD (!!!) for \(expr\) etc
+
+	@param expr	Expression that we are forwarded to
+	"""
+	def __init__(self, expr):
+		Expr.__init__(self)
+		if isinstance(expr, Expr):
+			raise TypeError, "Expected expression"
+		self.expr = expr
+
 class Name(Expr):
-    """holds a value which means a number"""
-    def __init__(self, name):
+
+	"""holds a value which means a number"""
+	def __init__(self, name):
 		Expr.__init__(self)
 		if type(name) not in (unicode, str):
 			raise TypeError, "Expected string type, but %s found" % type(value).__name__
 		self.name = name
-    def __str__(self):
-        return self.name
+
+	def __str__(self):
+        	return self.name
 
 
 class Bind(Expr):
 
 	"""
-	Contructor that creates a bind symbol
+	Constructor that creates a bind symbol
 
 	@param name	String value for the identifyer
 	@param bind	Expression symbol that we'd liked to be bound to
@@ -54,6 +70,7 @@ class Value(Expr, Returnable):
 		if type(value) not in shareds.ValueTypes:
 			raise TypeError, "Expected numeric type, but %s found" % type(value).__name__
 		self.value = value
+
 	def __str__(self):
 		return str(self.value)
 
@@ -84,6 +101,7 @@ class Operator(Expr, Returnable, Callable): # TODO: Change that!
 
     def __init__(self, opcode):
 		self.opcode = opcode
+
     def __str__(self):
         return self.opcode
 
@@ -91,12 +109,13 @@ class Call(Expr):
 
 	def __init__(self, func, args):
 		Expr.__init__(self)
-		#if not isinstance(func, Callable):
-		#	raise TypeError, "Expect functions or operators to be called"
+		if not isinstance(func, Callable):
+			raise TypeError, "Expect functions or operators to be called"
 		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
-		for i in xrange(len(args)):
+		for i, arg in enumerate(args):
 			if not isinstance(args[i], Expr):
 				raise TypeError, "Argument %d is no expression" % (i + 1)
 		self.func = func
 		self.args = args
+
