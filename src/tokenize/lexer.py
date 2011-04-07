@@ -1,9 +1,7 @@
-"""Beware: 4 whitespaces for indentation used. If combined with spaces it will break"""
+"""Beware: 4 whitespaces for indentation used. If combined with tabs it will break"""
 import sys
 if not '..' in sys.path:    # makes common symbols accessible
     sys.path.insert(0, '..')
-
-print sys.path
 import symbols
 import re
 
