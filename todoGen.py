@@ -1,3 +1,5 @@
+"""Scans all files in this project for FIXME and TODO comments and writes them to todos.txt
+has to be invoked while being in myLambda/ and not in e.g. myLambda/src"""
 import os
 import re
 files = []
@@ -15,11 +17,15 @@ for i in range(1,len(files)):	# we're in subdirs so we have to add '/' to get re
 files = searchFiles
 
 #remove unwanted files
-blacklist = ['./todos.txt', './todoGen.py'] + [f for f in files if f[0] == '_' or f[-1] =='c']
+print
+print "####", [f for f in files if f[0] == '.']
+print
+blacklist = ['./todos.txt', './todoGen.py'] + [f for f in files if '__' in f or f[-3:] =='pyc' or '.git' in f]
 for b in blacklist:
+	print b
 	files.remove(b)
 
-print 'searching: ', files
+#print 'searching: ', files
 
 TODO = re.compile('TODO.*')	# everything after TODO in one line
 todos = []

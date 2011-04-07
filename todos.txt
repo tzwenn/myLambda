@@ -1,0 +1,5 @@
+#TODO#
+	TODO: Change that! in file ./src/symbols.py in line 99
+#FIXME#
+	FIXME! in file ./README.md in line 82
+	FIXME in file ./src/parse/parserTest.py in line 2
