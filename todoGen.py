@@ -1,13 +1,16 @@
 """Scans all files in this project for FIXME and TODO comments and writes them to todos.txt
 has to be invoked while being in myLambda/ and not in e.g. myLambda/src"""
+import sys
 import os
 import re
 files = []
 searchFiles = []
 
+# get all subdirs and its files
 for root, dirs, f in os.walk('./'):
-	files.append((root, f))	# get all subdirs and its files
+	files.append((root, f))
 
+# build filepaths out of dir and filename
 for f in files[0][1]:
 	searchFiles.append(files[0][0] + str(f))	# we're in ./ so we can just concat directory's name with filename
 
@@ -17,22 +20,20 @@ for i in range(1,len(files)):	# we're in subdirs so we have to add '/' to get re
 files = searchFiles
 
 #remove unwanted files
-print
-print "####", [f for f in files if f[0] == '.']
-print
-blacklist = ['./todos.txt', './todoGen.py'] + [f for f in files if '__' in f or f[-3:] =='pyc' or '.git' in f]
+blacklist = ['./todos.txt', './todoGen.py'] + \
+		[f for f in files if '__' in f or f[-3:] =='pyc' or '.git' in f]
 for b in blacklist:
-	print b
 	files.remove(b)
 
-#print 'searching: ', files
+print 'searching:'
+map(lambda x: sys.stdout.write(x + '\n'), files)
 
 TODO = re.compile('TODO.*')	# everything after TODO in one line
-todos = []
 FIXME = re.compile('FIXME.*') # everything after FIXME in one line
 
+# gather todos and fixmes
+todos = []
 fixmes = []
-
 for f in files:
 	with open(f) as fi:
 		lineNumber = 0
