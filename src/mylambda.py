@@ -1,4 +1,6 @@
 #!/usr/bin/env python
 
 if __name__ == "__main__":
-	print "Hello World"
+	from console import LambdaConsole
+	cmd = LambdaConsole()
+	cmd.cmdloop()
