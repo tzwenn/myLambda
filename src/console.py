@@ -1,6 +1,11 @@
 import cmd
+from tokenize import lexer
 from run import evaluate
 from shareds import MyLambdaErr
+
+# Constants
+input_prompt = "-: "
+contin_prompt = "..\t"
 
 class LambdaConsole(cmd.Cmd):
 
@@ -8,13 +13,23 @@ class LambdaConsole(cmd.Cmd):
 		cmd.Cmd.__init__(self)
 		self.intro = "myLambda (C) 2011 Lolcathorst\n" \
 		             "Type \"help\" for more information."
-		self.prompt = "-: "
+		self.prompt = input_prompt
 		self.env = evaluate.Environment()
+		self.line = ""
 
 	def emptyline(self):
 		pass # Empty lines have no effect
 
 	def buildParseTree(self, line):
+		tokens = lexer.tokenize(line)
+
+		###############################################################
+
+		for t in tokens:
+			print t, type(t).__name__
+
+		###############################################################
+
 		return None # TODO: Let there be action!
 
 	def default(self, line):
@@ -25,6 +40,19 @@ class LambdaConsole(cmd.Cmd):
 			except MyLambdaErr, e:
 				print "%s: %s" % (type(e).__name__, e)
 
+	def precmd(self, line):
+		""" Buffer input unless it ends by '.' """
+		# FIXME: Regard Comments
+		ls = line.strip()
+		if ls[-1] != '.' and ls not in ('help', 'quit'):
+			self.prompt = contin_prompt
+			self.line += ls
+			return ""
+		else:
+			self.prompt = input_prompt
+			dummy = self.line
+			self.line = ""
+			return dummy + ls
 
 	def help_quit(self):
 		print "Quits the interactive console"
