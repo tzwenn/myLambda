@@ -1,4 +1,5 @@
 import cmd
+from tokenize import lexer
 from run import evaluate
 from shareds import MyLambdaErr
 
@@ -15,6 +16,15 @@ class LambdaConsole(cmd.Cmd):
 		pass # Empty lines have no effect
 
 	def buildParseTree(self, line):
+		tokens = lexer.tokenize(line)
+
+		###############################################################
+
+		for t in tokens:
+			print t, type(t).__name__
+
+		###############################################################
+
 		return None # TODO: Let there be action!
 
 	def default(self, line):
@@ -24,7 +34,6 @@ class LambdaConsole(cmd.Cmd):
 				print self.env(cmd).value
 			except MyLambdaErr, e:
 				print "%s: %s" % (type(e).__name__, e)
-
 
 	def help_quit(self):
 		print "Quits the interactive console"
