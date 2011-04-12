@@ -52,7 +52,7 @@ class Bind(Expr):
 	def __init__(self, name, expr):
 		Expr.__init__(self)
 		if type(name) not in (unicode, str):
-			raise TypeError, "Excpected string type, but %s found" % type(value).__name__
+			raise TypeError, "Excpected string type, but %s found" % type(name).__name__
 		if not isinstance(expr, Expr):
 			raise TypeError, "Expected expression"
 		self.name = name
