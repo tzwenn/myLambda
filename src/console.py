@@ -42,9 +42,10 @@ class LambdaConsole(cmd.Cmd):
 
 	def precmd(self, line):
 		""" Buffer input unless it ends by '.' """
-		# FIXME: Regard Comments
-		ls = line.strip()
-		if ls[-1] != '.' and ls not in ('help', 'quit'):
+		ls = line.partition(';')[0].strip()
+		if ls in ("", "help", "quit"):
+			return ls
+		if ls[-1] != '.':
 			self.prompt = contin_prompt
 			self.line += ls
 			return ""
