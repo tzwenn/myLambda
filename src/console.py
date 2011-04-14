@@ -2,6 +2,7 @@ import cmd
 from tokenize import lexer
 from run import evaluate
 from shareds import MyLambdaErr
+import parse.parser as parse
 
 # Constants
 input_prompt = "-: "
@@ -42,6 +43,8 @@ class LambdaConsole(cmd.Cmd):
 
 	def precmd(self, line):
 		""" Buffer input unless it ends by '.' """
+		# TODO name + newline + another name are merged into one name; should be two names
+
 		ls = line.partition(';')[0].strip()
 		if ls in ("", "help", "quit"):
 			return ls
