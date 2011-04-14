@@ -1,39 +1,38 @@
-"""Beware: 4 whitespaces for indentation used. If combined with tabs it will break"""
 import sys
-if not '..' in sys.path:    # makes common symbols accessible
-    sys.path.insert(0, '..')
-import symbols
+if not '..' in sys.path:	# makes common symbols accessible
+	sys.path.insert(0, '..')
+import src.symbols as symbols
 import re
 
 class EOFToken(object):
-    """marks end of a given input"""
-    def __str__(self):
-        return 'EOF reached'
+	"""marks end of a given input"""
+	def __str__(self):
+		return 'EOF'
 
 class BaseToken(object):
-    """holds everything we need for a lambda expression: # = ( ) ."""
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return self.value
+	"""holds everything we need for a lambda expression: # = ( ) ."""
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return self.value
 
 class IdentifierToken(BaseToken):
-    """holds references to lambda expressions or builtin functions"""
-    def __init__(self, name):
-        self.name = name
-    def __str__(self):
-        return self.name
+	"""holds references to lambda expressions or builtin functions"""
+	def __init__(self, name):
+		self.name = name
+	def __str__(self):
+		return self.name
 
 class WhiteSpaceToken(BaseToken):
-    """holds one whitespace char"""
-    def __init__(self):
-        BaseToken.__init__(self, ' ')
+	"""holds one whitespace char"""
+	def __init__(self):
+		BaseToken.__init__(self, ' ')
 
 class CharacterToken(BaseToken):
-    """is used for every other ASCII input other which isn't recognized as one of the other tokens
-    that means in case of #x: +(x 1).! it will hold the !"""
-    def __init__(self, value):
-        BaseToken.__init__(self, value)
+	"""is used for every other ASCII input other which isn't recognized as one of the other tokens
+	that means in case of #x: +(x 1).! it will hold the !"""
+	def __init__(self, value):
+		BaseToken.__init__(self, value)
 
 # Numbers are floats and ints
 NUMBER = re.compile('\d+(?:\.\d+)?')
@@ -50,61 +49,61 @@ BASETOKEN = re.compile('\(|\)|#|=|\.')
 OPERATOR = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
 
 COMMENT = re.compile(';.*') # ignore everything after a comment
-                            # not quite happy with comments after ;
+							# not quite happy with comments after ;
 
 # find all whitespaces, including formfeed and vertical tab
 WHITESPACE = re.compile('\s+')
 
 def tokenize(string):
-    """Generator to yield tokens
-    usage:
-    tokens = lexer.tokenize(myString)
-    for t in tokens:
-        print t
+	"""Generator to yield tokens
+	usage:
+	tokens = lexer.tokenize(myString)
+	for t in tokens:
+		print t
 
-    for more infos have a look at src/tokenize/lexerText.py
-    """
+	for more infos have a look at src/tokenize/lexerText.py
+	"""
 
-    while string:
+	while string:
 
-        comment = COMMENT.match(string)
-        name = NAME.match(string)
-        number = NUMBER.match(string)
-        baseToken = BASETOKEN.match(string)
-        operator = OPERATOR.match(string)
-        whitespace = WHITESPACE.match(string)
+		comment = COMMENT.match(string)
+		name = NAME.match(string)
+		number = NUMBER.match(string)
+		baseToken = BASETOKEN.match(string)
+		operator = OPERATOR.match(string)
+		whitespace = WHITESPACE.match(string)
 
-        if comment:
-            comment = comment.group(0)
-            string = string[len(comment):]   # skip comments
+		if comment:
+			comment = comment.group(0)
+			string = string[len(comment):]	 # skip comments
 
-        elif name:
-            name = name.group(0)
-            yield symbols.Name(name)
-            string = string[len(name):]
+		elif name:
+			name = name.group(0)
+			yield symbols.Name(name)
+			string = string[len(name):]
 
-        elif number:
-            number = number.group(0)
-            yield symbols.Value(float(number))
-            string = string[len(number):]
+		elif number:
+			number = number.group(0)
+			yield symbols.Value(float(number))
+			string = string[len(number):]
 
-        elif baseToken:
-            baseToken = baseToken.group(0)
-            yield BaseToken(baseToken)
-            string = string[len(baseToken):]
+		elif baseToken:
+			baseToken = baseToken.group(0)
+			yield BaseToken(baseToken)
+			string = string[len(baseToken):]
 
-        elif operator:
-            operator = operator.group(0)
-            yield symbols.Operator(operator)
-            string = string[len(operator):]
+		elif operator:
+			operator = operator.group(0)
+			yield symbols.Operator(operator)
+			string = string[len(operator):]
 
-        elif whitespace:
-            whitespace = whitespace.group(0)
-            yield WhiteSpaceToken()
-            string = string[len(whitespace):]
+		elif whitespace:
+			whitespace = whitespace.group(0)
+			yield WhiteSpaceToken()
+			string = string[len(whitespace):]
 
-        else:
-            yield CharacterToken(string[0]) # yields unknown char
-            string = string[1:]
+		else:
+			yield CharacterToken(string[0]) # yields unknown char
+			string = string[1:]
 
-    yield EOFToken()    # we're done
+	yield EOFToken()	# we're done
