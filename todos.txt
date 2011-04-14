@@ -1,4 +1,6 @@
 #TODO#
+	TODO: Let there be action! in file ./src/console.py in line 37
+	TODO name + newline + another name are merged into one name; should be two names in file ./src/console.py in line 49
 	TODO: Change that! in file ./src/symbols.py in line 99
 #FIXME#
 	FIXME! in file ./README.md in line 82

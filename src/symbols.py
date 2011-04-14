@@ -109,8 +109,6 @@ class Call(Expr):
 
 	def __init__(self, func, args):
 		Expr.__init__(self)
-		if not isinstance(func, Callable):
-			raise TypeError, "Expect functions or operators to be called"
 		if not shareds.isIterable(args):
 			raise TypeError, "Expected iterable as list of arguments"
 		for i, arg in enumerate(args):

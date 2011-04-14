@@ -12,6 +12,9 @@ class NoSystemError(IndexError, MyLambdaErr):
 class ArgumentError(TypeError, MyLambdaErr):
 	pass
 
+class CallError(TypeError, MyLambdaErr):
+	pass
+
 class Environment(object):
 
 	def __init__(self):
@@ -47,6 +50,8 @@ class Environment(object):
 
 	def __evCall(self, symbol):
 		func = self.evaluate(symbol.func)
+		if not isinstance(func, symbols.Callable):
+			raise CallError, "Symbol not callable"
 		if func.argc != len(symbol.args):
 			raise ArgumentError, "Function takes exactly %d arguments (%d given)" % (func.argc, len(symbol.args))
 		if isinstance(func, BuiltIn):
