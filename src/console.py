@@ -22,9 +22,12 @@ class LambdaConsole(cmd.Cmd):
 
 	def buildParseTree(self, line):
 		tokens = lexer.tokenize(line)
-
 		###############################################################
-
+		"""parsers = parse.parserGenerator(line)
+		for p in parsers:
+			# possible to open separate threads here
+			p.parse()
+		"""
 		for t in tokens:
 			print t, type(t).__name__
 
