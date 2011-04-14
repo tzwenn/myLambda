@@ -1,9 +1,6 @@
 from shareds import toBool, MyLambdaErr
 from symbols import Value, Func
 
-class CallError(TypeError, MyLambdaErr):
-	pass
-
 class BuiltIn(Func):
 
 	def __init__(self, argc, dfn):
