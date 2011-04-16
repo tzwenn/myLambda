@@ -7,11 +7,11 @@ cex  ::= name | \(expr\) | operator | call
 
 values are numbers only atm
 
-() und Space are escapeable
+() and Space are escapable
 
 Base types: bool, number
 
-builtin functions for:
+built-in functions for:
     bool: & | ^
     number: + - * / ** %
 
@@ -26,6 +26,8 @@ Tokens:
         #
         .
         =
+	[
+	]
 
     Identifier:
         name
@@ -51,5 +53,7 @@ Tokens:
         1
         2
         3...
-
         later chars too
+
+	[0 1 2]
+	...

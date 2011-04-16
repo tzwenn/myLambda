@@ -2,10 +2,10 @@
 ValueTypes = (int, long, float, bool)
 
 """
-Function checking whether an object is iterable
+Function for checking whether an object is iterable
 
 @param i	object to be checked
-@return A boolean value whether i is an iterable object
+@return A   boolean value whether i is an iterable object
 """
 def isIterable(i):
 	return hasattr(i,'__iter__') or hasattr(i,'__getitem__')
