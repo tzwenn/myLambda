@@ -10,7 +10,7 @@ class EOFToken(object):
 		return 'EOF'
 
 class BaseToken(object):
-	"""holds everything we need for a lambda expression: # = ( ) ."""
+	"""holds everything we need for a lambda expression or list  # : = ( ) . [ ]"""
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
@@ -43,7 +43,7 @@ NUMBER = re.compile('\d+(?:\.\d+)?')
 NAME = re.compile('[a-zA-Z_]+\w*[\?]?')
 
 # check at first ( and ) and then #, = and .
-BASETOKEN = re.compile('\(|\)|#|=|\.')
+BASETOKEN = re.compile('\(|\)|#|=|\.|\[|\]')
 
 # builtin functions
 OPERATOR = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
