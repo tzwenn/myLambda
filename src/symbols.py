@@ -96,6 +96,9 @@ class Func(Expr, Returnable, Callable):
 		self.argc = len(args)
 		self.dfn = dfn
 
+	def __str__(self):
+		return "<function/%d>" % self.argc
+
 class Operator(Expr, Returnable, Callable): # TODO: Change that!
     """holds builtin functions like basic math, logic and bit manipulation"""
 

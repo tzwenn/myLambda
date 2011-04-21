@@ -55,7 +55,7 @@ class BuiltIns(object):
 		return doIt(key, args)
 
 	def lambdaPrint(self, a):
-		val = self.__syToNmb(a)
+		val = self.__ev(a)
 		print val
-		return Value(val)
+		return val
 
