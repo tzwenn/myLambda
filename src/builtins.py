@@ -1,5 +1,6 @@
 from shareds import toBool, MyLambdaErr
 from symbols import Value, Func
+from sys import stdout
 
 class BuiltIn(Func):
 
@@ -34,7 +35,7 @@ class BuiltIns(object):
 			'^': BuiltIn(2, lambda a, b:  Value(self.__syToBol(a) ^ self.__syToBol(b))),
 			'!': BuiltIn(1, lambda a: Value(not self.__syToBol(a))),
 
-			'print': BuiltIn(1, self.lambdaPrint),
+			'print': BuiltIn(1, lambda a: (lambda val: stdout.write("%s\n" % str(val)) or val)(self.__ev(a))),
 			'input': BuiltIn(0, lambda: Value(float(raw_input()))),
 
 			'if': BuiltIn(3, lambda cond, yes, no: self.__ev(yes if self.__syToBol(cond) else no)),
@@ -53,9 +54,4 @@ class BuiltIns(object):
 
 	def __call__(self, key, args):
 		return doIt(key, args)
-
-	def lambdaPrint(self, a):
-		val = self.__syToNmb(a)
-		print val
-		return Value(val)
 
