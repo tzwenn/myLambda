@@ -16,7 +16,7 @@ class Parser(object):
 
 	def __init__(self, tokens):
 		self.tokens = [t for t in tokens]	#convert generator to list
-		parsed =
+		# maybe parsed = ...
 
 	def parseCall(self, exp, result):
 		pass
@@ -35,14 +35,18 @@ class Parser(object):
 				for i in xrange(j, len(tokens)):
 					if isinstance(token[j], WhiteSpaceToken):
 						pass
-					bindTokens.append(parseExpression(tokens[j:])	# create Bind oder so
+					bindTokens.append(parseExpression(tokens[j:])	# create Bind oder so, irgendie quatsch
 
 		if bindTokens and cexTokens:
 			raise ParseError, "Can't decide whether %s is a Call Expression or a Bind" % str(tokens)
 
 
+	def parseValue(self, tokens):
+		self.tokens =  tokens[1:]		# update not yet parsed tokens
+		return symbols.Value(tokens[0])
+
 	def parseBind(self, tokens):
-		B
+		pass
 
 	def parse(self, result):
 		"""Main method which builds the parse tree
