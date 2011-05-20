@@ -2,7 +2,7 @@ import cmd
 from tokenize import lexer
 from run import evaluate
 from shareds import MyLambdaErr
-# import parse.parser as parse
+import parse.parser as parse
 
 # Constants
 input_prompt = "-: "
@@ -22,17 +22,17 @@ class LambdaConsole(cmd.Cmd):
 		pass # Empty lines have no effect
 
 	def buildParseTree(self, line):
-		tokens = lexer.tokenize(line)
-		###############################################################
-		"""parsers = parse.parserGenerator(line)
+		#############################################
+		parsers = parse.parserGenerator(line)
 		for p in parsers:
 			# possible to open separate threads here
 			p.parse()
 		"""
 		for t in tokens:
 			print t, type(t).__name__
+		"""
 
-		###############################################################
+		#############################################
 
 		return None # TODO: Let there be action!
 

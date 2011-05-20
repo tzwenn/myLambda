@@ -2,21 +2,29 @@ import sys
 if not '../' in sys.path:    # makes common symbols accessible
     sys.path.insert(0, '..')
 
-import src.tokenize.lexer as lexer
-import src.symbols as symbols
+from tokenize.lexer import *
+import symbols
 
 
 class ParseError(Exception):
 	pass
-
 
 class Parser(object):
 	"""Parses a given statement represented as token objects
     """
 
 	def __init__(self, tokens):
-		self.tokens = [t for t in tokens]	#convert generator to list
+		self.tokens = list(tokens)
+		self.pos = 0
+		self.cur = self.tokens[0]
 		# maybe parsed = ...
+
+	def next(self):
+		self.pos += 1
+		if self.pos >= len(self.tokens):
+			raise StopIteration
+			return
+		self.cur = self.tokens[self.pos]
 
 	def parseCall(self, exp, result):
 		pass
@@ -25,7 +33,7 @@ class Parser(object):
 		"""bind or cex: first is a name, determine next token to decide"""
 		bindTokens = []
 		cexTokens = []
-		for i in xrange(0, len(tokens)):
+		for i in xrange(len(tokens)):
 			if isinstance(tokens[i], WhiteSpaceToken):
 				pass	# ignore whitespce
 				#tokens = tokens[:i] + tokens[i+1:]	# remove whitespace
@@ -35,20 +43,19 @@ class Parser(object):
 				for i in xrange(j, len(tokens)):
 					if isinstance(token[j], WhiteSpaceToken):
 						pass
-					bindTokens.append(parseExpression(tokens[j:])	# create Bind oder so, irgendie quatsch
-
+					bindTokens.append(parseExpression(tokens[j:]))
 		if bindTokens and cexTokens:
 			raise ParseError, "Can't decide whether %s is a Call Expression or a Bind" % str(tokens)
 
 
-	def parseValue(self, tokens):
+	def parseValue(self, t):
 		self.tokens =  tokens[1:]		# update not yet parsed tokens
 		return symbols.Value(tokens[0])
 
 	def parseBind(self, tokens):
 		pass
 
-	def parse(self, result):
+	def parse(self):
 		"""Main method which builds the parse tree
 		"""
 		for t in self.tokens:
@@ -57,16 +64,17 @@ class Parser(object):
 				self.parseName(t)
 
 			# current token is a lambda expression
-			if isinstance(t, symbols.BaseToken) and str(t) == '#':
-				self.parseFunc()
+			if isinstance(t, BaseToken) and str(t) == '#':
+				self.parseFunc(t)
 
 			# current token is a function call
 			if isinstance(t, symbols.Name) and self.stream[i+1] == '(':
-				self.parseCall()
+				self.parseCall(t)
 
 			# current token is a value
 			if isinstance(t, symbols.Value):
-				self.parseValue()
+				self.parseValue(t)
+
 
 def createStatement(tokens):
 	"""takes the token generator object and creates one stream of tokens
@@ -74,16 +82,15 @@ def createStatement(tokens):
 	"""
 	currentStream = []			# create buffer for one expression
 	for t in tokens:
-		current = tokens.next()
-		while str(current) != '.':		# '.' marks end of statement
-			currentStream.append(current)
-			current = tokens.next()
-		yield currentStream
-		currentStream = []		#reset buffer
+		if str(t) == '.':		# '.' marks end of statement
+			yield currentStream
+			currentStream = []
+		else:
+			currentStream.append(t)
 
 def parserGenerator(string):
 	"""Generator to create parser instances for each expression
 	"""
-	statements = createStatement(lexer.tokenize(string))
+	statements = createStatement(tokenize(string))
 	for s in statements:
 		yield Parser(s)		# call my return value with self.parse()
