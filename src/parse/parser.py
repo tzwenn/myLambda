@@ -3,10 +3,12 @@ if not '../' in sys.path:    # makes common symbols accessible
     sys.path.insert(0, '..')
 
 import src.tokenize.lexer as lexer
+import src.shareds as shareds
 import src.symbols as symbols
 
 
 class ParseError(Exception):
+class ParseError(shareds.MyLambdaErr):
 	pass
 
 
@@ -16,6 +18,7 @@ class Parser(object):
 
 	def __init__(self, tokens):
 		self.tokens = [t for t in tokens]	#convert generator to list
+		self.tokens = list(tokens)	#convert generator to list
 		# maybe parsed = ...
 
 	def parseCall(self, exp, result):
@@ -36,6 +39,7 @@ class Parser(object):
 					if isinstance(token[j], WhiteSpaceToken):
 						pass
 					bindTokens.append(parseExpression(tokens[j:])	# create Bind oder so, irgendie quatsch
+					bindTokens.append(parseExpression(tokens[j:]))	# create Bind oder so, irgendie quatsch
 
 		if bindTokens and cexTokens:
 			raise ParseError, "Can't decide whether %s is a Call Expression or a Bind" % str(tokens)
@@ -67,6 +71,7 @@ class Parser(object):
 			# current token is a value
 			if isinstance(t, symbols.Value):
 				self.parseValue()
+		return self.tokens
 
 def createStatement(tokens):
 	"""takes the token generator object and creates one stream of tokens
@@ -76,14 +81,25 @@ def createStatement(tokens):
 	for t in tokens:
 		current = tokens.next()
 		while str(current) != '.':		# '.' marks end of statement
+	for current in tokens:
+		if str(current) != '.':
 			currentStream.append(current)
 			current = tokens.next()
 		yield currentStream
 		currentStream = []		#reset buffer
+		else:
+			if not currentStream:
+				raise ParseError
+			yield currentStream
+			currentStream = []
 
 def parserGenerator(string):
 	"""Generator to create parser instances for each expression
+	"""Generator to create parser instances for each statement
+	call my return value with self.parse()
 	"""
 	statements = createStatement(lexer.tokenize(string))
 	for s in statements:
 		yield Parser(s)		# call my return value with self.parse()
+		print "I am the statement", map(str, s)
+		yield Parser(s)
