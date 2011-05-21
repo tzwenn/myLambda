@@ -1,6 +1,18 @@
 from tokenize.lexer import *
 import symbols
 
+def cleanupTokens(tokens):
+	"""
+	Removes whitespaces, joines broken CharacterTokens to Operators
+
+	This should have been already done by the lexer
+	"""
+	result = []
+	for i, t in enumerate(tokens):
+		if isinstance(t, WhiteSpaceToken):
+			continue
+		result.append(t)
+	return result
 
 class ParseError(Exception):
 	pass
@@ -27,22 +39,21 @@ class Parser(object):
 		dump = Parser(self.tokens)
 		callTree = symbols.Call(func, dump.parse(forceExpr=False))
 		self.cutoff(dump.consumed)
+		print self.tokens
 		return callTree
 
 	def parseName(self, t):
 		"""bind or cex: first is a name, determine next token to decide"""
-		for i, n in enumerate(self.tokens):
-			if isinstance(n, WhiteSpaceToken):
-				continue	# ignore whitespce
-			elif isinstance(n, BaseToken) and str(n) == "=":
-				self.cutoff(i + 1) # Cut off whitespace + "="
+		if self.tokens:
+			n = self.tokens[0]
+			if isinstance(n, BaseToken) and str(n) == "=":
+				self.next() # Cut off "="
 				return self.parseBind(t)
 			elif isinstance(n, BaseToken) and str(n) == "(":
-				self.cutoff(i + 1)
+				self.next() # Cut off "("
 				return self.parseCall(t)
 			elif isinstance(n, BaseToken) and str(n) == ")":
-				self.cutoff(i)
-				return t
+				return t    # Let parse() end this expr for us
 			else:
 				raise ParseError, "Bind or call expected, found \"%s\"" % str(n)
 		return t
@@ -51,9 +62,7 @@ class Parser(object):
 		args = []
 		while self.tokens:
 			t = self.next()
-			if isinstance(t, WhiteSpaceToken):
-				continue
-			elif isinstance(t, symbols.Name):
+			if isinstance(t, symbols.Name):
 				args.append(t.name)
 			elif isinstance(t, BaseToken) and str(t) == ":":
 				dump = Parser(self.tokens)
@@ -79,18 +88,15 @@ class Parser(object):
 		result = []
 		while self.tokens:
 			t = self.next()
-			if isinstance(t, WhiteSpaceToken):
-				continue
-
 			# current token could be begin of a binding or call expression
 			if isinstance(t, symbols.Name):
 				result.append(self.parseName(t))
 
 			# current token is a value
-			if isinstance(t, symbols.Value):
+			elif isinstance(t, symbols.Value):
 				result.append(self.parseValue(t))
 
-			if isinstance(t, BaseToken):
+			elif isinstance(t, BaseToken):
 				# current token is a lambda expression
 				if str(t) == "#": 
 					result.append(self.parseFunc(t))
@@ -103,7 +109,7 @@ class Parser(object):
 
 		if forceExpr:
 			if len(result) > 1:
-				raise ParseError, "End of expression expected, found \"%s\"" % str(self.result[1])
+				raise ParseError, "End of expression expected, found \"%s\"" % str(result[1])
 			else:
 				return result[0]
 		return result
@@ -116,7 +122,7 @@ def createStatement(tokens):
 	currentStream = []			# create buffer for one expression
 	for t in tokens:
 		if str(t) == '.':		# '.' marks end of statement
-			yield currentStream
+			yield cleanupTokens(currentStream)
 			currentStream = []
 		else:
 			currentStream.append(t)
