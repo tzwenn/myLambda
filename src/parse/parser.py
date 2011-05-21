@@ -23,22 +23,28 @@ class Parser(object):
 		self.tokens = self.tokens[n:]
 		self.consumed += n
 
-	def parseCall(self, exp):
-		pass
+	def parseCall(self, func):
+		dump = Parser(self.tokens)
+		callTree = symbols.Call(func, dump.parse(forceExpr=False))
+		self.cutoff(dump.consumed)
+		return callTree
 
 	def parseName(self, t):
 		"""bind or cex: first is a name, determine next token to decide"""
 		for i, n in enumerate(self.tokens):
 			if isinstance(n, WhiteSpaceToken):
 				continue	# ignore whitespce
-			elif isinstance(n, BaseToken):
-				if str(n) == "=":
-					self.cutoff(i+1) # Cut off whitespace + "="
-					return self.parseBind(t)
-				elif str(n) == "(":
-					pass # TODO: cex
-			else:
+			elif isinstance(n, BaseToken) and str(n) == "=":
+				self.cutoff(i + 1) # Cut off whitespace + "="
+				return self.parseBind(t)
+			elif isinstance(n, BaseToken) and str(n) == "(":
+				self.cutoff(i + 1)
+				return self.parseCall(t)
+			elif isinstance(n, BaseToken) and str(n) == ")":
+				self.cutoff(i)
 				return t
+			else:
+				raise ParseError, "Bind or call expected, found \"%s\"" % str(n)
 		return t
 
 	def parseFunc(self, t):
@@ -55,7 +61,7 @@ class Parser(object):
 				self.cutoff(dump.consumed)
 				return funcTree				
 			else:
-				raise ParseError, "Unknown token \"%s\", identifier or \":\" expected." % str(t)
+				raise ParseError, "Identifier or \":\" expected, found \"%s\"" % str(t)
 
 	def parseValue(self, t):
 		return t

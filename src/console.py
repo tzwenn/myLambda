@@ -36,6 +36,7 @@ class LambdaConsole(cmd.Cmd):
 		"""
 		for t in lexer.tokenize(line):
 			print t, type(t).__name__
+		return []
 		#"""
 
 		#############################################
