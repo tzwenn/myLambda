@@ -84,7 +84,7 @@ def tokenize(string):
 
 		elif number:
 			number = number.group(0)
-			yield symbols.Value(float(number))
+			yield symbols.Value(int(number))
 			string = string[len(number):]
 
 		elif baseToken:
