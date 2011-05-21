@@ -15,14 +15,17 @@ def cleanupTokens(tokens):
 		i += 1
 		if isinstance(t, WhiteSpaceToken):
 			continue
-		if isinstance(t, BaseToken) and str(t) == '=':
+		elif isinstance(t, BaseToken) and str(t) == '=':
 			try:
 				if isinstance(tokens[i], BaseToken) and str(tokens[i]) == "=":
 					result.append(symbols.Operator("=="))
 					i += 1
+				else:
+					result.append(t)
 			except IndexError:
-				pass
-		result.append(t)
+				pass	
+		else:
+			result.append(t)
 	return result
 
 class ParseError(Exception):
