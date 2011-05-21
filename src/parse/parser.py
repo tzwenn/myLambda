@@ -1,7 +1,3 @@
-import sys
-if not '../' in sys.path:    # makes common symbols accessible
-    sys.path.insert(0, '..')
-
 from tokenize.lexer import *
 import symbols
 
@@ -14,7 +10,6 @@ class Parser(object):
 
 	def __init__(self, tokens):
 		self.tokens = tokens[:]
-		self.result = []
 		self.consumed = 0 # Tokens we've consumed
 		# maybe parsed = ...
 
@@ -37,8 +32,8 @@ class Parser(object):
 			if isinstance(n, WhiteSpaceToken):
 				continue	# ignore whitespce
 			elif isinstance(n, BaseToken):
-				if str(n) == '=':
-					self.cutoff(i+1)
+				if str(n) == "=":
+					self.cutoff(i+1) # Cut off whitespace + "="
 					return self.parseBind(t)
 				elif str(n) == "(":
 					pass # TODO: cex
@@ -56,8 +51,7 @@ class Parser(object):
 				args.append(t.name)
 			elif isinstance(t, BaseToken) and str(t) == ":":
 				dump = Parser(self.tokens)
-				exprTree = dump.parse()[0]	# TODO: Check list
-				funcTree = symbols.Func(args, exprTree)
+				funcTree = symbols.Func(args, dump.parse())
 				self.cutoff(dump.consumed)
 				return funcTree				
 			else:
@@ -68,16 +62,15 @@ class Parser(object):
 
 	def parseBind(self, t):
 		dump = Parser(self.tokens)
-		exprTree = dump.parse()[0]		# TODO: Check list
-		bindTree = symbols.Bind(t.name, exprTree)
+		bindTree = symbols.Bind(t.name, dump.parse())
 		self.cutoff(dump.consumed)
 		return bindTree
 
 
-	def parse(self):
+	def parse(self, forceExpr=True): # a.k.a. parseExpr
 		"""Main method which builds the parse tree
 		"""
-		self.result = []
+		result = []
 		while self.tokens:
 			t = self.next()
 			if isinstance(t, WhiteSpaceToken):
@@ -85,17 +78,29 @@ class Parser(object):
 
 			# current token could be begin of a binding or call expression
 			if isinstance(t, symbols.Name):
-				self.result.append(self.parseName(t))
-
-			# current token is a lambda expression
-			if isinstance(t, BaseToken) and str(t) == '#':
-				self.result.append(self.parseFunc(t))
+				result.append(self.parseName(t))
 
 			# current token is a value
 			if isinstance(t, symbols.Value):
-				self.result.append(self.parseValue(t))
+				result.append(self.parseValue(t))
 
-		return self.result
+			if isinstance(t, BaseToken):
+				# current token is a lambda expression
+				if str(t) == "#": 
+					result.append(self.parseFunc(t))
+				elif str(t) == ")":
+					""" Closing brackets end an expr
+					    This is not part of the grammar, but atm
+					    helpfull for ending a call or cex
+					"""
+					break # TODO: assert matching "(" exists
+
+		if forceExpr:
+			if len(result) > 1:
+				raise ParseError, "End of expression expected, found \"%s\"" % str(self.result[1])
+			else:
+				return result[0]
+		return result
 
 
 def createStatement(tokens):

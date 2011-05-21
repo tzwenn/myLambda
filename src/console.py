@@ -29,8 +29,7 @@ class LambdaConsole(cmd.Cmd):
 		for p in parsers:
 			# possible to open separate threads here
 			try:
-				for tree in p.parse():
-					yield tree
+				yield p.parse()
 			except parser.ParseError, e:
 				print "%s: %s" % (type(e).__name__, e)
 				break
