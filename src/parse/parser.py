@@ -24,6 +24,10 @@ class Parser(object):
 		self.consumed += 1
 		return e
 
+	def cutoff(self, n):
+		self.tokend = self.tokens[n:]
+		self.consumed += n
+
 	def parseCall(self, exp):
 		pass
 
@@ -34,13 +38,8 @@ class Parser(object):
 				continue	# ignore whitespce
 			if isinstance(n, BaseToken):
 				if str(n) == '=':
-					# Here we have a bind
-					dump = Parser(self.tokens[i:])
-					exprTree = dump.parse()[0]		# TODO: Check list
-					bindTree = symbols.Bind(t.name, exprTree)
-					self.consumed += dump.consumed
-					self.tokens = self.tokens[dump.consumed+1:]
-					return bindTree
+					self.cutoff(i+1)
+					return self.parseBind(t)
 				elif str(n) == "(":
 					pass # TODO: cex
 			else:
@@ -48,12 +47,17 @@ class Parser(object):
 		return t
 
 
-
 	def parseValue(self, t):
 		return t
 
-	def parseBind(self, tokens):
-		pass
+	def parseBind(self, t):
+		dump = Parser(self.tokens)
+		exprTree = dump.parse()[0]		# TODO: Check list
+		bindTree = symbols.Bind(t.name, exprTree)
+		self.consumed += dump.consumed
+		self.tokens = self.tokens[dump.consumed+1:]
+		return bindTree
+
 
 	def parse(self):
 		"""Main method which builds the parse tree
@@ -70,7 +74,7 @@ class Parser(object):
 
 			# current token is a lambda expression
 			if isinstance(t, BaseToken) and str(t) == '#':
-				self.parseFunc(t)
+				self.result.append(self.parseFunc(t))
 
 			# current token is a value
 			if isinstance(t, symbols.Value):
