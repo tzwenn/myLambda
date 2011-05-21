@@ -25,7 +25,7 @@ class Parser(object):
 		return e
 
 	def cutoff(self, n):
-		self.tokend = self.tokens[n:]
+		self.tokens = self.tokens[n:]
 		self.consumed += n
 
 	def parseCall(self, exp):
@@ -36,7 +36,7 @@ class Parser(object):
 		for i, n in enumerate(self.tokens):
 			if isinstance(n, WhiteSpaceToken):
 				continue	# ignore whitespce
-			if isinstance(n, BaseToken):
+			elif isinstance(n, BaseToken):
 				if str(n) == '=':
 					self.cutoff(i+1)
 					return self.parseBind(t)
@@ -46,6 +46,22 @@ class Parser(object):
 				return t
 		return t
 
+	def parseFunc(self, t):
+		args = []
+		while self.tokens:
+			t = self.next()
+			if isinstance(t, WhiteSpaceToken):
+				continue
+			elif isinstance(t, symbols.Name):
+				args.append(t.name)
+			elif isinstance(t, BaseToken) and str(t) == ":":
+				dump = Parser(self.tokens)
+				exprTree = dump.parse()[0]	# TODO: Check list
+				funcTree = symbols.Func(args, exprTree)
+				self.cutoff(dump.consumed)
+				return funcTree				
+			else:
+				raise ParseError, "Unknown token \"%s\", identifier or \":\" expected." % str(t)
 
 	def parseValue(self, t):
 		return t
@@ -54,8 +70,7 @@ class Parser(object):
 		dump = Parser(self.tokens)
 		exprTree = dump.parse()[0]		# TODO: Check list
 		bindTree = symbols.Bind(t.name, exprTree)
-		self.consumed += dump.consumed
-		self.tokens = self.tokens[dump.consumed+1:]
+		self.cutoff(dump.consumed)
 		return bindTree
 
 
