@@ -38,6 +38,8 @@ class Environment(object):
 			return self.__evBind(symbol)
 		elif isinstance(symbol, symbols.Name):
 			return self.identifiers[symbol]
+		elif isinstance(symbol, symbols.Operator):
+			return self.identifiers[symbol]
 		elif isinstance(symbol, symbols.Call):
 			return self.__evCall(symbol)
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__

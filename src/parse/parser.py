@@ -8,9 +8,20 @@ def cleanupTokens(tokens):
 	This should have been already done by the lexer
 	"""
 	result = []
-	for i, t in enumerate(tokens):
+	i = 0
+	cnt = len(tokens)
+	while i < cnt:
+		t = tokens[i]
+		i += 1
 		if isinstance(t, WhiteSpaceToken):
 			continue
+		if isinstance(t, BaseToken) and str(t) == '=':
+			try:
+				if isinstance(tokens[i], BaseToken) and str(tokens[i]) == "=":
+					result.append(symbols.Operator("=="))
+					i += 1
+			except IndexError:
+				pass
 		result.append(t)
 	return result
 
@@ -39,7 +50,6 @@ class Parser(object):
 		dump = Parser(self.tokens)
 		callTree = symbols.Call(func, dump.parse(forceExpr=False))
 		self.cutoff(dump.consumed)
-		print self.tokens
 		return callTree
 
 	def parseName(self, t):
@@ -54,8 +64,16 @@ class Parser(object):
 				return self.parseCall(t)
 			elif isinstance(n, BaseToken) and str(n) == ")":
 				return t    # Let parse() end this expr for us
-			else:
-				raise ParseError, "Bind or call expected, found \"%s\"" % str(n)
+		return t
+
+	def parseOperator(self, t):
+		if self.tokens:
+			n = self.tokens[0]
+			if isinstance(n, BaseToken) and str(n) == "(":
+				self.next()
+				return self.parseCall(t)
+			elif isinstance(n, BaseToken) and str(n) == ")":
+				return t
 		return t
 
 	def parseFunc(self, t):
@@ -95,6 +113,9 @@ class Parser(object):
 			# current token is a value
 			elif isinstance(t, symbols.Value):
 				result.append(self.parseValue(t))
+
+			elif isinstance(t, symbols.Operator):
+				result.append(self.parseOperator(t))
 
 			elif isinstance(t, BaseToken):
 				# current token is a lambda expression

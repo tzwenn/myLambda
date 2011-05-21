@@ -99,7 +99,7 @@ class Func(Expr, Returnable, Callable):
 	def __str__(self):
 		return "<function/%d>" % self.argc
 
-class Operator(Expr, Returnable, Callable): # TODO: Change that!
+class Operator(Expr, Callable): # TODO: Change that!
     """holds builtin functions like basic math, logic and bit manipulation"""
 
     def __init__(self, opcode):
