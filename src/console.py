@@ -3,6 +3,7 @@ from tokenize import lexer
 from run import evaluate
 from shareds import MyLambdaErr
 import parse.parser as parse
+import symbols
 
 # Constants
 input_prompt = "-: "
@@ -23,22 +24,23 @@ class LambdaConsole(cmd.Cmd):
 
 	def buildParseTree(self, line):
 		#############################################
+		#"""
 		parsers = parse.parserGenerator(line)
 		for p in parsers:
 			# possible to open separate threads here
-			p.parse()
+			for tree in p.parse():
+				yield tree
 		"""
-		for t in tokens:
+		for t in lexer.tokenize(line):
 			print t, type(t).__name__
-		"""
+		#"""
 
 		#############################################
 
-		return None # TODO: Let there be action!
+		#return None # TODO: Let there be action!
 
 	def default(self, line):
-		cmd = self.buildParseTree(line)
-		if cmd is not None:
+		for cmd in self.buildParseTree(line):
 			try:
 				print self.env(cmd).value
 			except MyLambdaErr, e:

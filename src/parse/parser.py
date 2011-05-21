@@ -10,47 +10,47 @@ class ParseError(Exception):
 	pass
 
 class Parser(object):
-	"""Parses a given statement represented as token objects
-    """
+	"""Parses a given statement represented as token objects"""
 
 	def __init__(self, tokens):
-		self.tokens = list(tokens)
-		self.pos = 0
-		self.cur = self.tokens[0]
+		self.tokens = tokens[:]
+		self.result = []
+		self.consumed = 0 # Tokens we've consumed
 		# maybe parsed = ...
 
 	def next(self):
-		self.pos += 1
-		if self.pos >= len(self.tokens):
-			raise StopIteration
-			return
-		self.cur = self.tokens[self.pos]
+		e = self.tokens[0]
+		del self.tokens[0]
+		self.consumed += 1
+		return e
 
-	def parseCall(self, exp, result):
+	def parseCall(self, exp):
 		pass
 
-	def parseName(self, tokens, result):
+	def parseName(self, t):
 		"""bind or cex: first is a name, determine next token to decide"""
-		bindTokens = []
-		cexTokens = []
-		for i in xrange(len(tokens)):
-			if isinstance(tokens[i], WhiteSpaceToken):
-				pass	# ignore whitespce
-				#tokens = tokens[:i] + tokens[i+1:]	# remove whitespace
-			if str(tokens[i]) == '=':
-				bindTokens.append(tokens[0])
-				bindTokens.append(tokens[i])
-				for i in xrange(j, len(tokens)):
-					if isinstance(token[j], WhiteSpaceToken):
-						pass
-					bindTokens.append(parseExpression(tokens[j:]))
-		if bindTokens and cexTokens:
-			raise ParseError, "Can't decide whether %s is a Call Expression or a Bind" % str(tokens)
+		for i, n in enumerate(self.tokens):
+			if isinstance(n, WhiteSpaceToken):
+				continue	# ignore whitespce
+			if isinstance(n, BaseToken):
+				if str(n) == '=':
+					# Here we have a bind
+					dump = Parser(self.tokens[i:])
+					exprTree = dump.parse()[0]		# TODO: Check list
+					bindTree = symbols.Bind(t.name, exprTree)
+					self.consumed += dump.consumed
+					self.tokens = self.tokens[dump.consumed+1:]
+					return bindTree
+				elif str(n) == "(":
+					pass # TODO: cex
+			else:
+				return t
+		return t
+
 
 
 	def parseValue(self, t):
-		self.tokens =  tokens[1:]		# update not yet parsed tokens
-		return symbols.Value(tokens[0])
+		return t
 
 	def parseBind(self, tokens):
 		pass
@@ -58,22 +58,25 @@ class Parser(object):
 	def parse(self):
 		"""Main method which builds the parse tree
 		"""
-		for t in self.tokens:
+		self.result = []
+		while self.tokens:
+			t = self.next()
+			if isinstance(t, WhiteSpaceToken):
+				continue
+
 			# current token could be begin of a binding or call expression
 			if isinstance(t, symbols.Name):
-				self.parseName(t)
+				self.result.append(self.parseName(t))
 
 			# current token is a lambda expression
 			if isinstance(t, BaseToken) and str(t) == '#':
 				self.parseFunc(t)
 
-			# current token is a function call
-			if isinstance(t, symbols.Name) and self.stream[i+1] == '(':
-				self.parseCall(t)
-
 			# current token is a value
 			if isinstance(t, symbols.Value):
-				self.parseValue(t)
+				self.result.append(self.parseValue(t))
+
+		return self.result
 
 
 def createStatement(tokens):
