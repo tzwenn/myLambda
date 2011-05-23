@@ -26,8 +26,8 @@ Tokens:
         #
         .
         =
-	[
-	]
+		[
+		]
 
     Identifier:
         name

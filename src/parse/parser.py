@@ -6,8 +6,9 @@ import src.tokenize.lexer as lexer
 import src.shareds as shareds
 import src.symbols as symbols
 
+import pdb
 
-class ParseError(Exception):
+
 class ParseError(shareds.MyLambdaErr):
 	pass
 
@@ -17,7 +18,6 @@ class Parser(object):
     """
 
 	def __init__(self, tokens):
-		self.tokens = [t for t in tokens]	#convert generator to list
 		self.tokens = list(tokens)	#convert generator to list
 		# maybe parsed = ...
 
@@ -38,39 +38,40 @@ class Parser(object):
 				for i in xrange(j, len(tokens)):
 					if isinstance(token[j], WhiteSpaceToken):
 						pass
-					bindTokens.append(parseExpression(tokens[j:])	# create Bind oder so, irgendie quatsch
 					bindTokens.append(parseExpression(tokens[j:]))	# create Bind oder so, irgendie quatsch
 
 		if bindTokens and cexTokens:
 			raise ParseError, "Can't decide whether %s is a Call Expression or a Bind" % str(tokens)
 
 
-	def parseValue(self, tokens):
-		self.tokens =  tokens[1:]		# update not yet parsed tokens
-		return symbols.Value(tokens[0])
-
 	def parseBind(self, tokens):
 		pass
 
-	def parse(self, result):
-		"""Main method which builds the parse tree
+	def parseRec(self, tokens, prevToken):
+		"""Does the recursive parsing, stops at closing brackets and
+		returns the tree to the environment"""
+		pass
+
+	def parse(self):
+		"""Main method which coordinates the building of the parse tree
 		"""
 		for t in self.tokens:
 			# current token could be begin of a binding or call expression
-			if isinstance(t, symbols.Name):
-				self.parseName(t)
+			"""if isinstance(t, symbols.Name):
+				return self.parseName(t)
 
 			# current token is a lambda expression
 			if isinstance(t, symbols.BaseToken) and str(t) == '#':
-				self.parseFunc()
+				return self.parseFunc()
 
 			# current token is a function call
 			if isinstance(t, symbols.Name) and self.stream[i+1] == '(':
-				self.parseCall()
-
+				return self.parseCall()
+			"""
 			# current token is a value
 			if isinstance(t, symbols.Value):
-				self.parseValue()
+				return t
+			#pdb.set_trace()
 		return self.tokens
 
 def createStatement(tokens):
@@ -78,15 +79,9 @@ def createStatement(tokens):
     which represent one statement without trailing '.'
 	"""
 	currentStream = []			# create buffer for one expression
-	for t in tokens:
-		current = tokens.next()
-		while str(current) != '.':		# '.' marks end of statement
 	for current in tokens:
 		if str(current) != '.':
 			currentStream.append(current)
-			current = tokens.next()
-		yield currentStream
-		currentStream = []		#reset buffer
 		else:
 			if not currentStream:
 				raise ParseError
@@ -94,12 +89,10 @@ def createStatement(tokens):
 			currentStream = []
 
 def parserGenerator(string):
-	"""Generator to create parser instances for each expression
 	"""Generator to create parser instances for each statement
 	call my return value with self.parse()
 	"""
 	statements = createStatement(lexer.tokenize(string))
 	for s in statements:
-		yield Parser(s)		# call my return value with self.parse()
 		print "I am the statement", map(str, s)
 		yield Parser(s)

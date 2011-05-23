@@ -2,6 +2,7 @@ import symbols
 from builtins import BuiltIns, BuiltIn
 from run.identifiers import IdentifiersList
 from shareds import MyLambdaErr
+#import pdb
 
 """
 Exception, raised if a not yet implemented symbol is evaluated.
@@ -40,6 +41,7 @@ class Environment(object):
 			return self.identifiers[symbol]
 		elif isinstance(symbol, symbols.Call):
 			return self.__evCall(symbol)
+		#pdb.set_trace()
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
 	def __evBind(self, symbol):
@@ -72,4 +74,3 @@ class Environment(object):
 
 	def __call__(self, symbol):
 		return self.evaluate(symbol)
-

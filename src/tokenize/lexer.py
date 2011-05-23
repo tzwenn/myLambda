@@ -1,7 +1,4 @@
-import sys
-if not '..' in sys.path:	# makes common symbols accessible
-	sys.path.insert(0, '..')
-import src.symbols as symbols
+import symbols
 import re
 
 class EOFToken(object):
