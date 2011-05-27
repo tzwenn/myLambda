@@ -43,7 +43,7 @@ NAME = re.compile('[a-zA-Z_]+\w*[\?]?')
 BASETOKEN = re.compile('\(|\)|#|=|\.|\[|\]')
 
 # builtin functions
-OPERATOR = re.compile('&|\||\^|\+|\-|/|%|\*{1,2}|==|>=|==|<=|!=')
+OPERATOR = re.compile('>=|==|<=|!=|&|\||\^|\+|\-|/|%|<|\>|\*{1,2}')
 
 COMMENT = re.compile(';.*') # ignore everything after a comment
 							# not quite happy with comments after ;
@@ -66,8 +66,8 @@ def tokenize(string):
 		comment = COMMENT.match(string)
 		name = NAME.match(string)
 		number = NUMBER.match(string)
-		baseToken = BASETOKEN.match(string)
 		operator = OPERATOR.match(string)
+		baseToken = BASETOKEN.match(string)
 		whitespace = WHITESPACE.match(string)
 
 		if comment:
@@ -96,8 +96,7 @@ def tokenize(string):
 
 		elif whitespace:
 			whitespace = whitespace.group(0)
-			yield WhiteSpaceToken()
-			string = string[len(whitespace):]
+			string = string[len(whitespace):]	# skip whitespace
 
 		else:
 			yield CharacterToken(string[0]) # yields unknown char

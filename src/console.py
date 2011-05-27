@@ -2,12 +2,9 @@ import cmd
 from tokenize import lexer
 from run import evaluate
 from shareds import MyLambdaErr
-#import parse.parser as parse
-import parse.p as parse
-import run.evaluate
-import pdb
-from symbols import *
+from parse import parser
 import symbols
+
 # Constants
 input_prompt = "-: "
 contin_prompt = "..\t"
@@ -17,7 +14,7 @@ class LambdaConsole(cmd.Cmd):
 	def __init__(self):
 		cmd.Cmd.__init__(self)
 		self.intro = "myLambda (C) 2011 Lolcathorst\n" \
-			"Type \"help\" for more information."
+		             "Type \"help\" for more information."
 		self.prompt = input_prompt
 		self.env = evaluate.Environment()
 		self.line = ""
@@ -26,31 +23,30 @@ class LambdaConsole(cmd.Cmd):
 		pass # Empty lines have no effect
 
 	def buildParseTree(self, line):
-		tokens = lexer.tokenize(line)
-		###############################################################
-		"""parsers = parse.parserGenerator(line)
-		#pdb.set_trace()
-		expressions = []
+		#############################################
+		#"""
+		parsers = parser.parserGenerator(line)
 		for p in parsers:
 			# possible to open separate threads here
-			print 'parse'
-			k = p.parse()
-			return k#k[0]
-
+			try:
+				yield p.parse()
+			except parser.ParseError, e:
+				print "%s: %s" % (type(e).__name__, e)
+				break
 		"""
-		p = parse.P()
-		parsed = p.parse(tokens)
-		print parsed.__class__, "42"
-		###############################################################
-		return parsed#Call(Name('print'),[parsed])
-		#return symbols.Value(3)# TODO: Let there be action!
-		#return None
+		for t in lexer.tokenize(line):
+			print t, type(t).__name__
+		return []
+		#"""
+
+		#############################################
+
+		#return None # TODO: Let there be action!
 
 	def default(self, line):
-		cmd = self.buildParseTree(line)
-		if cmd is not None:
+		for cmd in self.buildParseTree(line):
 			try:
-				print self.env(cmd).value
+				print self.env(cmd)
 			except MyLambdaErr, e:
 				print "%s: %s" % (type(e).__name__, e)
 

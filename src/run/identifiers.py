@@ -30,6 +30,8 @@ class IdentifiersList(object):
 	def __fitKey(self, key):
 		if isinstance(key, symbols.Name):
 			key = key.name
+		elif isinstance(key, symbols.Operator):
+			key = key.opcode
 		if type(key) not in (str, unicode):
 			raise TypeError, "Expected string key, but %s found" % type(key).__name__
 		return key

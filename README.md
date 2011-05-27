@@ -10,12 +10,12 @@ another. We don't like it that much either ;-)
 ##A brief example##
 Let me give you a taste of the currently planned syntax. For more information consult the EBNF, our grammar. The syntax of myLambda is close to the usual way to describe functions in the lambda calculus.
 How to calculate a given faculty? Well, easy:
-fac = #x: if(<=(x 1) 1 +(fak(-(x 1) -(x 2)))).
+fac = #x: if(<=(x 1) 1 *(fac(-(x 1)) x)). #FIXME
 
 Calculate a given fibonacci number:
 fibo = #x: if(==(x 0) 0 
-           (if(==(x 1) 1)
-           +(fibo(-(x 1)) fibo(-(x 2))))).
+           (if(==(x 1) 1
+               +(fibo(-(x 1)) fibo(-(x 2))))).
 
 
 As you may noticed currently we use prefix notation, so x+1 is written +(x 1). We plan to migrate to the familiar infix notation once myLambda is up and running.
