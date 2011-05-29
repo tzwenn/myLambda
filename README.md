@@ -10,7 +10,7 @@ another. We don't like it that much either ;-)
 ##A brief example##
 Let me give you a taste of the currently planned syntax. For more information consult the EBNF, our grammar. The syntax of myLambda is close to the usual way to describe functions in the lambda calculus.
 How to calculate a given faculty? Well, easy:
-fac = #x: if(<=(x 1) 1 *(fac(-(x 1)) x)). #FIXME
+fac = #x: if(<=(x 1) 1 *(fac(-(x 1)) x)).
 
 Calculate a given fibonacci number:
 fibo = #x: if(==(x 0) 0 
