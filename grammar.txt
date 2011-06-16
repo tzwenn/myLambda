@@ -12,7 +12,7 @@ values are numbers only atm
 Base types: bool, number
 
 built-in functions for:
-    bool: & | ^
+    bool: ! & | ^
     number: + - * / ** %
 
 number -> bool: == < > <= >= !=
@@ -33,6 +33,7 @@ Tokens:
         name
 
     Operator:
+    	!
         &
         |
         ^

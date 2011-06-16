@@ -43,7 +43,7 @@ NAME = re.compile('[a-zA-Z_]+\w*[\?]?')
 BASETOKEN = re.compile('\(|\)|#|=|\.|\[|\]')
 
 # builtin functions
-OPERATOR = re.compile('>=|==|<=|!=|&|\||\^|\+|\-|/|%|<|\>|\*{1,2}')
+OPERATOR = re.compile('>=|==|<=|!=|!|&|\||\^|\+|\-|/|%|<|\>|\*{1,2}')
 
 COMMENT = re.compile(';.*') # ignore everything after a comment
 							# not quite happy with comments after ;
