@@ -84,15 +84,15 @@ def tokenize(string):
 			yield symbols.Value(float(number))
 			string = string[len(number):]
 
-		elif baseToken:
-			baseToken = baseToken.group(0)
-			yield BaseToken(baseToken)
-			string = string[len(baseToken):]
-
 		elif operator:
 			operator = operator.group(0)
 			yield symbols.Operator(operator)
 			string = string[len(operator):]
+
+		elif baseToken:
+			baseToken = baseToken.group(0)
+			yield BaseToken(baseToken)
+			string = string[len(baseToken):]
 
 		elif whitespace:
 			whitespace = whitespace.group(0)
