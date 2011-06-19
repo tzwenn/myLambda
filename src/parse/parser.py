@@ -7,8 +7,9 @@ class ParseError(Exception):
 class Parser(object):
 	"""Parses a given statement represented as token objects"""
 
-	def __init__(self, tokens):
+	def __init__(self, tokens, isNested=False):
 		self.tokens = tokens[:]
+		self.isNested = isNested
 		self.consumed = 0 # Tokens we've consumed
 		# maybe parsed = ...
 
@@ -23,7 +24,7 @@ class Parser(object):
 		self.consumed += n
 
 	def parseCall(self, func):
-		dump = Parser(self.tokens)
+		dump = Parser(self.tokens, True)
 		callTree = symbols.Call(func, dump.parse(forceExpr=False))
 		self.cutoff(dump.consumed)
 		return callTree
@@ -75,40 +76,58 @@ class Parser(object):
 		self.cutoff(dump.consumed)
 		return bindTree
 
+	def analyseToken(self, t, last):
+		""" Find out what this token means - context free """
+		# current token could be begin of a binding or call expression
+		if isinstance(t, symbols.Name):
+			return self.parseName(t)
+
+		# current token is a value
+		elif isinstance(t, symbols.Value):
+			return self.parseValue(t)
+
+		# taking Func here too is akward
+		#but since we don't use CEX, this will do
+		elif isinstance(t, symbols.Operator) or isinstance(t, symbols.Func):
+			return self.parseOperator(t)
+
+		elif isinstance(t, BaseToken):
+			# current token is a lambda expression
+			if str(t) == "#":
+				return self.parseFunc(t)
+			elif str(t) == ")":
+				""" Closing brackets end an expr
+				    This is not part of the grammar, but atm
+				    helpfull for ending a call or cex
+				"""
+				if not self.isNested:
+					self.consumed -= 1
+				return None
+			elif str(t) == "(":
+				dump = Parser(self.tokens, True)
+				obj = dump.parse()
+				self.cutoff(dump.consumed)
+				return self.analyseToken(obj, t)
 
 	def parse(self, forceExpr=True): # a.k.a. parseExpr
 		"""Main method which builds the parse tree
 		"""
 		result = []
+		sym = None
 		while self.tokens:
-			t = self.next()
-			# current token could be begin of a binding or call expression
-			if isinstance(t, symbols.Name):
-				result.append(self.parseName(t))
-
-			# current token is a value
-			elif isinstance(t, symbols.Value):
-				result.append(self.parseValue(t))
-
-			elif isinstance(t, symbols.Operator):
-				result.append(self.parseOperator(t))
-
-			elif isinstance(t, BaseToken):
-				# current token is a lambda expression
-				if str(t) == "#": 
-					result.append(self.parseFunc(t))
-				elif str(t) == ")":
-					""" Closing brackets end an expr
-					    This is not part of the grammar, but atm
-					    helpfull for ending a call or cex
-					"""
-					break # TODO: assert matching "(" exists
+			last = sym
+			sym = self.analyseToken(self.next(), last)
+			if sym is None:
+				break
+			result.append(sym)
 
 		if forceExpr:
 			if len(result) > 1:
 				raise ParseError, "End of expression expected, found \"%s\"" % str(result[1])
-			else:
+			elif result:
 				return result[0]
+			else:
+				return None # TODO: Catch it
 		return result
 
 
