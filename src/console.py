@@ -23,7 +23,6 @@ class LambdaConsole(cmd.Cmd):
 		pass # Empty lines have no effect
 
 	def buildParseTree(self, line):
-		#############################################
 		#"""
 		parsers = parser.parserGenerator(line)
 		for p in parsers:
@@ -38,10 +37,6 @@ class LambdaConsole(cmd.Cmd):
 			print t, type(t).__name__
 		return []
 		#"""
-
-		#############################################
-
-		#return None # TODO: Let there be action!
 
 	def default(self, line):
 		for cmd in self.buildParseTree(line):
