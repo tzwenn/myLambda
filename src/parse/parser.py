@@ -149,3 +149,13 @@ def parserGenerator(string):
 	statements = createStatement(tokenize(string))
 	for s in statements:
 		yield Parser(s)		# call my return value with self.parse()
+
+def buildParseTree(line):
+	parsers = parserGenerator(line)
+	for p in parsers:
+		try:
+			yield p.parse()
+		except ParseError, e:
+			print "%s: %s" % (type(e).__name__, e)
+			break
+
