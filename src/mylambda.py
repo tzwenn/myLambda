@@ -1,6 +1,13 @@
 #!/usr/bin/python
 
+import sys
+
 if __name__ == "__main__":
-	from console import LambdaConsole
-	cmd = LambdaConsole()
-	cmd.cmdloop()
+	if len(sys.argv) > 1:
+		import script
+		script.runfile(sys.argv[1])
+	else:
+		import console
+		cmd = console.LambdaConsole()
+		cmd.cmdloop()
+
