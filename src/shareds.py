@@ -1,4 +1,4 @@
-
+FileExt = ".mld"
 ValueTypes = (int, long, float, bool)
 
 """

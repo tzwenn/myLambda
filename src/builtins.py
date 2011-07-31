@@ -1,6 +1,7 @@
-from shareds import toBool, MyLambdaErr
+from shareds import toBool, MyLambdaErr, FileExt
 from symbols import Value, Func
 from sys import stdout
+from script import runfile
 
 class BuiltIn(Func):
 
@@ -37,6 +38,9 @@ class BuiltIns(object):
 
 			'print': BuiltIn(1, lambda a: (lambda val: stdout.write("%s\n" % str(val)) or val)(self.__ev(a))),
 			'input': BuiltIn(0, lambda: Value(float(raw_input()))),
+
+			#TODO: What about a search path?
+			'import': BuiltIn(1, lambda s: runfile(s.name+FileExt, self.__ev)),
 
 			'if': BuiltIn(3, lambda cond, yes, no: self.__ev(yes if self.__syToBol(cond) else no)),
 		}
