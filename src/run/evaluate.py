@@ -53,9 +53,9 @@ class Environment(object):
 		return symbol
 
 	def __evBind(self, symbol):
-		key = self.identifiers.checkKey(symbol.name, True)
+		key = self.identifiers.checkKey(symbol.name)
 		res = self.evaluate(symbol.expr)
-		self.identifiers.unsaveSet(key, res, True)
+		self.identifiers.unsaveSet(key, res)
 		return res
 
 	def __evCall(self, symbol):
