@@ -95,6 +95,7 @@ class Func(Expr, Returnable, Callable):
 		self.args = args[:]
 		self.argc = len(args)
 		self.dfn = dfn
+		self.cscope = None	# Creation scope
 
 	def __str__(self):
 		return "<function/%d>" % self.argc

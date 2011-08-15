@@ -31,7 +31,10 @@ class Environment(object):
 	@returns	A Value or Function-Symbol representing the evaluations result (both joined into Returnable)
 	"""
 	def evaluate(self, symbol):
-		if isinstance(symbol, symbols.Returnable): # func or value
+		if isinstance(symbol, symbols.Func):
+			return self.__evFunc(symbol)
+		# by now just Value, maybe we want some lists someday
+		elif isinstance(symbol, symbols.Returnable):
 			return symbol
 		elif isinstance(symbol, symbols.Cex):
 			return self.evaluate(symbol.expr)
@@ -43,8 +46,11 @@ class Environment(object):
 			return self.identifiers[symbol]
 		elif isinstance(symbol, symbols.Call):
 			return self.__evCall(symbol)
-		#pdb.set_trace()
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
+
+	def __evFunc(self, symbol): # Called on definition of a function
+		symbol.cscope = self.identifiers.dump()
+		return symbol
 
 	def __evBind(self, symbol):
 		key = self.identifiers.checkKey(symbol.name, True)
@@ -61,7 +67,8 @@ class Environment(object):
 		if isinstance(func, BuiltIn):
 			return func(symbol.args)
 
-		self.identifiers.push()
+		# Only symbol.Func from here on => we know func.csope exists
+		self.identifiers.push(func.cscope)
 		res = ex = None
 		try:
 			for i in xrange(len(func.args)):

@@ -28,6 +28,7 @@ class IdentifiersList(object):
 		self.__contexts = [{}]
 
 	def __fitKey(self, key):
+		""" If the key is a Name or Operator-symbol, get it's identifier string """
 		if isinstance(key, symbols.Name):
 			key = key.name
 		elif isinstance(key, symbols.Operator):
@@ -62,12 +63,21 @@ class IdentifiersList(object):
 	def unsaveSet(self, key, value, glob=False):
 		self.__contexts[0 if glob else -1][key] = value
 
-	def push(self):
-		self.__contexts.append({})
+	def push(self, context=None):
+		if context is None:
+			self.__contexts.append({})
+		else:
+			self.__contexts.append(context)
 
 	def pop(self):
 		# __context[0] is global and cannot be removed
 		if len(self.__contexts) == 1:
 			raise NoContextError
 		self.__contexts.pop()
+
+	def dump(self):
+		""" Preserve the latest context for closures """
+		if len(self.__contexts) == 1:
+			return {} # Global context doesn't get preserved
+		return self.__contexts[-1] # FIXME: TODO: FIXME: TODO: ...
 
