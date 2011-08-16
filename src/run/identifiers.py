@@ -39,16 +39,16 @@ class IdentifiersList(object):
 
 	def __getitem__(self, key):
 		key = self.__fitKey(key)
-		# later defined identfiers hide away earlyer ones
+		# later defined identfiers hide away earlier ones
 		#   => Start searching at end
 		for context in reversed(self.__contexts):
 			if key in context:
 				return context[key]
 		raise NameUnboundError, "Identifier '%s' not found." % key
 
-	def checkKey(self, key, glob=False):
+	def checkKey(self, key):
 		key = self.__fitKey(key)
-		if key in self.__contexts[0 if glob else -1]:
+		if key in self.__contexts[-1]:
 			raise NameBoundError, "Identifier '%s' is already bound." % key
 		return key
 
@@ -60,8 +60,8 @@ class IdentifiersList(object):
 		checkValue(value)
 		self.__contexts[-1][self.checkKey(key)] = value # Only definied in most recent context
 
-	def unsaveSet(self, key, value, glob=False):
-		self.__contexts[0 if glob else -1][key] = value
+	def unsaveSet(self, key, value):
+		self.__contexts[-1][key] = value
 
 	def push(self, context=None):
 		if context is None:
@@ -79,5 +79,6 @@ class IdentifiersList(object):
 		""" Preserve the latest context for closures """
 		if len(self.__contexts) == 1:
 			return {} # Global context doesn't get preserved
-		return self.__contexts[-1] # FIXME: TODO: FIXME: TODO: ...
+		# TODO: Do we want only preserve the latest context or the whole except global?
+		return self.__contexts[-1]
 
