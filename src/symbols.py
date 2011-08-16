@@ -74,6 +74,22 @@ class Value(Expr, Returnable):
 	def __str__(self):
 		return str(self.value)
 
+class List(Expr, Returnable):
+
+	"""
+	Constructor that creates a list symbol
+
+	@param items	List of symbols representing the items of the list
+	"""
+	def __init__(self, items):
+		Expr.__init__(self)
+		if not shareds.isIterable(items):
+			raise TypeError, "Expected list to be created from iterable"
+		self.items = items
+
+	def __str__(self):
+		return "[%s]" % " ".join(map(str, items))
+		
 
 class Func(Expr, Returnable, Callable):
 
@@ -101,13 +117,13 @@ class Func(Expr, Returnable, Callable):
 		return "<function/%d>" % self.argc
 
 class Operator(Expr, Callable): # TODO: Change that!
-    """holds builtin functions like basic math, logic and bit manipulation"""
+	"""holds builtin functions like basic math, logic and bit manipulation"""
 
-    def __init__(self, opcode):
+	def __init__(self, opcode):
 		self.opcode = opcode
 
-    def __str__(self):
-        return self.opcode
+	def __str__(self):
+		return self.opcode
 
 class Call(Expr):
 
