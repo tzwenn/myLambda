@@ -46,6 +46,8 @@ class Environment(object):
 			return self.identifiers[symbol]
 		elif isinstance(symbol, symbols.Call):
 			return self.__evCall(symbol)
+		elif isinstance(symbol, symbols.List):
+			return self.__evList(symbol)
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
 	def __evFunc(self, symbol): # Called on definition of a function
@@ -81,5 +83,12 @@ class Environment(object):
 		self.identifiers.pop()
 		return res
 
+	def __evList(self, symbol):
+		# TODO: Check when this gets called, make sure its evaluated once!
+		for idx, item in enumerate(symbol.items):
+			symbol.items[idx] = self.evaluate(item)
+		return symbol
+
 	def __call__(self, symbol):
 		return self.evaluate(symbol)
+
