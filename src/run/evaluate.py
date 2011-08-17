@@ -2,7 +2,6 @@ import symbols
 from builtins import BuiltIns, BuiltIn
 from run.identifiers import IdentifiersList
 from shareds import MyLambdaErr
-#import pdb
 
 """
 Exception, raised if a not yet implemented symbol is evaluated.
@@ -33,6 +32,8 @@ class Environment(object):
 	def evaluate(self, symbol):
 		if isinstance(symbol, symbols.Func):
 			return self.__evFunc(symbol)
+		elif isinstance(symbol, symbols.List):
+			return self.__evList(symbol)
 		# by now just Value, maybe we want some lists someday
 		elif isinstance(symbol, symbols.Returnable):
 			return symbol
@@ -46,12 +47,15 @@ class Environment(object):
 			return self.identifiers[symbol]
 		elif isinstance(symbol, symbols.Call):
 			return self.__evCall(symbol)
-		elif isinstance(symbol, symbols.List):
-			return self.__evList(symbol)
 		raise NotImplementedError, "Not implemented symbol %s" % type(symbol).__name__
 
 	def __evFunc(self, symbol): # Called on definition of a function
 		symbol.cscope = self.identifiers.dump()
+		return symbol
+
+	def __evList(self, symbol):
+		for idx, item in enumerate(symbol.items):
+			symbol.items[idx] = self.evaluate(item)
 		return symbol
 
 	def __evBind(self, symbol):
@@ -82,12 +86,6 @@ class Environment(object):
 			raise ex
 		self.identifiers.pop()
 		return res
-
-	def __evList(self, symbol):
-		# TODO: Check when this gets called, make sure its evaluated once!
-		for idx, item in enumerate(symbol.items):
-			symbol.items[idx] = self.evaluate(item)
-		return symbol
 
 	def __call__(self, symbol):
 		return self.evaluate(symbol)

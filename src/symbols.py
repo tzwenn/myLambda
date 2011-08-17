@@ -88,7 +88,7 @@ class List(Expr, Returnable):
 		self.items = items
 
 	def __str__(self):
-		return "[%s]" % " ".join(map(str, items))
+		return "[%s]" % " ".join(map(str, self.items))
 		
 
 class Func(Expr, Returnable, Callable):
