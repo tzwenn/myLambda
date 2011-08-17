@@ -3,6 +3,9 @@ from symbols import Value, Func
 from sys import stdout
 from script import runfile
 
+class WrongTypeError(TypeError, MyLambdaErr):
+	pass
+
 class BuiltIn(Func):
 
 	def __init__(self, argc, dfn):
@@ -47,15 +50,22 @@ class BuiltIns(object):
 
 	def __syToNmb(self, symbol):
 		"""Symbol to numeric value"""
-		return self.__ev(symbol).value
+		val = self.__ev(symbol)
+		if not isinstance(val, Value): # TODO: Nice to know who throws that
+			raise WrongTypeError("Expected numeric value, found '%s'" % type(val).__name__)
+		return val.value
 
 	def __syToBol(self, symbol):
 		"""Symbol to boolean value"""
 		return toBool(self.__ev(symbol))
 
-	def doIt(self, key, args):
-		return self.funcs[key](*args)
+	def __syToList(self, symbol):
+		""" Returns the python list of items from a Symbol """
+		lst = self.__ev(symbol)
+		if not isinstace(lst, List): # Same as above
+			raise WrongTypeError("Expected List, found '%s'" % type(val).__name__)
+		return lst.items
 
 	def __call__(self, key, args):
-		return doIt(key, args)
+		return self.funcs[key](*args)
 
