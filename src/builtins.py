@@ -1,5 +1,5 @@
 from shareds import toBool, MyLambdaErr, FileExt
-from symbols import Value, Func
+from symbols import Value, Func, List
 from sys import stdout
 from script import runfile
 
@@ -39,6 +39,11 @@ class BuiltIns(object):
 			'^': BuiltIn(2, lambda a, b:  Value(self.__syToBol(a) ^ self.__syToBol(b))),
 			'!': BuiltIn(1, lambda a: Value(not self.__syToBol(a))),
 
+			# List functions
+			'head': BuiltIn(1, self.__head),
+			'tail': BuiltIn(1, lambda a: List(self.__syToLst(a)[1:])),
+			'cons': BuiltIn(2, lambda a, b: List([self.__ev(a)] + self.__syToLst(b))),
+
 			'print': BuiltIn(1, lambda a: (lambda val: stdout.write("%s\n" % str(val)) or val)(self.__ev(a))),
 			'input': BuiltIn(0, lambda: Value(float(raw_input()))),
 
@@ -59,12 +64,18 @@ class BuiltIns(object):
 		"""Symbol to boolean value"""
 		return toBool(self.__ev(symbol))
 
-	def __syToList(self, symbol):
+	def __syToLst(self, symbol):
 		""" Returns the python list of items from a Symbol """
 		lst = self.__ev(symbol)
-		if not isinstace(lst, List): # Same as above
+		if not isinstance(lst, List): # Same as above
 			raise WrongTypeError("Expected List, found '%s'" % type(val).__name__)
 		return lst.items
+
+	def __head(self, listSymbol):
+		items = self.__syToLst(listSymbol)
+		if not len(items):
+			raise WrongTypeError("Cannot get head of an empty list")
+		return items[0]
 
 	def __call__(self, key, args):
 		return self.funcs[key](*args)
