@@ -1,5 +1,5 @@
 from shareds import toBool, MyLambdaErr, FileExt
-from symbols import Value, Func, List
+from symbols import Value, Func, List, Call, Callable
 from sys import stdout
 from script import runfile
 
@@ -47,7 +47,11 @@ class BuiltIns(object):
 			# List functions
 			'head': BuiltIn(1, self.__head),
 			'tail': BuiltIn(1, lambda a: List(self.__syToLst(a)[1:])),
-			'cons': BuiltIn(2, lambda a, b: List([self.__ev(a)] + self.__syToLst(b))),
+			'cons': BuiltIn(2, lambda h, t: List([self.__ev(h)] + self.__syToLst(t))),
+			'append': BuiltIn(2, lambda a, b: List(self.__syToLst(a) + self.__syToLst(b))),
+			'map': BuiltIn(2, self.__map),
+			'filter': BuiltIn(2, self.__filter),
+			'foldl': BuiltIn(3, self.__foldl),
 
 			# Input/Output
 			'input': BuiltIn(0, lambda: Value(float(raw_input()))),
@@ -78,11 +82,33 @@ class BuiltIns(object):
 			raise WrongTypeError("Expected List, found '%s'" % type(val).__name__)
 		return lst.items
 
+	def __syToClb(self, symbol):
+		""" Symbol to Callable """
+		clb = self.__ev(symbol)
+		if not isinstance(clb, Callable): # Same as above
+			raise WrongTypeError("Expected Callable, found '%s'" % type(val).__name__)
+		return clb
+
 	def __head(self, listSymbol):
 		items = self.__syToLst(listSymbol)
 		if not len(items):
 			raise WrongTypeError("Cannot get head of an empty list")
 		return items[0]
+
+	def __map(self, f, lst):
+		f = self.__syToClb(f)
+		return List(map(lambda e: self.__ev(Call(f,[e])), self.__syToLst(lst)))
+
+	def __filter(self, f, lst):
+		f = self.__syToClb(f)
+		return List(filter(lambda e: self.__syToBol(self.__ev(Call(f,[e]))), self.__syToLst(lst)))
+
+	def __foldl(self, f, start, lst): # Not sure whether reduce() does the job here
+		f = self.__syToClb(f)
+		res = self.__ev(start)
+		for e in self.__syToLst(lst):
+			res = self.__ev(Call(f,[res,e]))
+		return res
 
 	def __call__(self, key, args):
 		return self.funcs[key](*args)
