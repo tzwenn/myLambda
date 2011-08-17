@@ -33,8 +33,7 @@ class Environment(object):
 		if isinstance(symbol, symbols.Func):
 			return self.__evFunc(symbol)
 		elif isinstance(symbol, symbols.List):
-			return self.__evList(symbol)
-		# by now just Value, maybe we want some lists someday
+			return symbols.List(map(self.evaluate, symbol.items))
 		elif isinstance(symbol, symbols.Returnable):
 			return symbol
 		elif isinstance(symbol, symbols.Cex):
@@ -51,11 +50,6 @@ class Environment(object):
 
 	def __evFunc(self, symbol): # Called on definition of a function
 		symbol.cscope = self.identifiers.dump()
-		return symbol
-
-	def __evList(self, symbol):
-		for idx, item in enumerate(symbol.items):
-			symbol.items[idx] = self.evaluate(item)
 		return symbol
 
 	def __evBind(self, symbol):

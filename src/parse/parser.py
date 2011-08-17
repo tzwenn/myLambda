@@ -108,6 +108,13 @@ class Parser(object):
 				obj = dump.parse()
 				self.cutoff(dump.consumed)
 				return self.analyseToken(obj, t)
+			elif str(t) == "[":
+				dump = Parser(self.tokens, True)
+				obj = dump.parse(False)
+				self.cutoff(dump.consumed)
+				return symbols.List(obj)
+			elif str(t) == "]":
+				return None
 
 	def parse(self, forceExpr=True): # a.k.a. parseExpr
 		"""Main method which builds the parse tree
