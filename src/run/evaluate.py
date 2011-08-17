@@ -67,12 +67,15 @@ class Environment(object):
 		if isinstance(func, BuiltIn):
 			return func(symbol.args)
 
+		# The args going to be passed
+		args = map(self.evaluate, symbol.args)
+
 		# Only symbol.Func from here on => we know func.csope exists
 		self.identifiers.push(func.cscope)
 		res = ex = None
 		try:
 			for i in xrange(len(func.args)):
-				self.identifiers.unsaveSet(func.args[i], self.evaluate(symbol.args[i]))
+				self.identifiers.unsaveSet(func.args[i], args[i])
 			res = self.evaluate(func.dfn)
 		except Exception, ex:
 			self.identifiers.pop()
