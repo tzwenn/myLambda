@@ -78,7 +78,9 @@ class IdentifiersList(object):
 	def dump(self):
 		""" Preserve the latest context for closures """
 		if len(self.__contexts) == 1:
-			return {} # Global context doesn't get preserved
+			return None # Global context doesn't get preserved
 		# TODO: Do we want only preserve the latest context or the whole except global?
-		return self.__contexts[-1]
+		res = {}
+		res.update(self.__contexts[-1])
+		return res
 

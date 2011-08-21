@@ -75,10 +75,10 @@ class Environment(object):
 				self.identifiers.unsaveSet(func.args[i], self.evaluate(symbol.args[i]))
 			res = self.evaluate(func.dfn)
 		except Exception, ex:
-			self.identifiers.pop()
+			pass
+		self.identifiers.pop()
 		if res is None:
 			raise ex
-		self.identifiers.pop()
 		return res
 
 	def __call__(self, symbol):
