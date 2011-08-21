@@ -79,7 +79,7 @@ class BuiltIns(object):
 		""" Returns the python list of items from a Symbol """
 		lst = self.__ev(symbol)
 		if not isinstance(lst, List): # Same as above
-			raise WrongTypeError("Expected List, found '%s'" % type(val).__name__)
+			raise WrongTypeError("Expected List, found '%s'" % type(lst).__name__)
 		return lst.items
 
 	def __syToClb(self, symbol):
