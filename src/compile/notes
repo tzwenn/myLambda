@@ -1,0 +1,30 @@
+MYLAMBDA			PYTHON
+
+
+#<a> <b>: <expr>		lambda <a>,<b>: <expr>
+
+call:				same as myLambda
+binds:				same, but only global
+
+
+---build-ins---
+
+INPLACE!!!!!
+ATM parenthesis to keep operator priority:
++(a b)				(a + b)
+!(a)				not (a)
+
+if(<c> <a> <b>)			<a> if <c> else <b>
+
+print				print
+
+-----TODO-----
+
+Until input/1 becomes own function (lists!) its:
+input()				float(raw_input())
+
+---DISCARDED--
+
+import
+Closures (local binds)
+All list stuff
