@@ -13,6 +13,10 @@ class Pythonzier:
 			return str(symbol)
 		elif isinstance(symbol, symbols.Name):
 			return str(symbol)
+		elif isinstance(symbol, symbols.Bind):
+			# FIXME: Check if this happens global!
+			return "%s = %s" % (symbol.name, self.__tr(symbol.expr))
+		# TODO: Bind, Cex, Operator, Call
 		raise NotImplementedError, "Cannot compile symbol %s yet" % type(symbol).__name__
 
 	def __call__(self, symbol):
