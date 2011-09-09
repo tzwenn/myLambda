@@ -13,3 +13,6 @@ class Pythonzier:
 			return str(symbol)
 		raise NotImplementedError, "Cannot compile symbol %s yet" % type(symbol).__name__
 
+	def __call__(self, symbol):
+		return self.__tr(symbol)
+

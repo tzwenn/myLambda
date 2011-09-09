@@ -5,7 +5,7 @@ MYLAMBDA			PYTHON
 
 call:				same as myLambda
 binds:				same, but only global
-
+name				same
 
 ---build-ins---
 
