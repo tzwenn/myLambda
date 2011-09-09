@@ -11,6 +11,8 @@ class Pythonzier:
 			return "lambda %s: %s" % (", ".join(symbol.args), self.__tr(symbol.dfn))
 		elif isinstance(symbol, symbols.Returnable):
 			return str(symbol)
+		elif isinstance(symbol, symbols.Name):
+			return str(symbol)
 		raise NotImplementedError, "Cannot compile symbol %s yet" % type(symbol).__name__
 
 	def __call__(self, symbol):

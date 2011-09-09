@@ -7,7 +7,7 @@ call:				same as myLambda
 binds:				same, but only global
 name				same
 
----build-ins---
+---built-ins---
 
 INPLACE!!!!!
 ATM parenthesis to keep operator priority:
