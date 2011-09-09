@@ -8,6 +8,7 @@ class BuiltIns(object):
 		self.__tr = translate
 		self.funcs = {
 			'!': lambda a: 'not (%s)' % self.__tr(a),
+			'if': lambda c, a, b: '%s if %s else %s' % (self.__tr(a), self.__tr(c), self.__tr(b))
 		}
 
 		for op in ['!=', '*', '**', '+', '-', '/', '<', '<=', '==', '>', '>=']:
@@ -29,9 +30,6 @@ class BuiltIns(object):
 			# Input/Output
 			'input': BuiltIn(0, lambda: Value(float(raw_input()))),
 			'print': BuiltIn(1, lambda a: (lambda val: stdout.write("%s\n" % str(val)) or val)(self.__ev(a))),
-
-			# Conditional evaluation 
-			'if': BuiltIn(3, lambda cond, yes, no: self.__ev(yes if self.__syToBol(cond) else no)),
 
 			# Reading libs TODO: What about a search path?
 			'import': BuiltIn(1, lambda s: runfile(s.name+FileExt, self.__ev)),
