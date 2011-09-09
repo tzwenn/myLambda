@@ -6,11 +6,16 @@ class BuiltIns(object):
 		if not callable(translate):
 			raise TypeError, "Expected callable for evaluate"
 		self.__tr = translate
-		self.funcs = {}
-		for op in ['!=', '%', '&', '*', '**', '+', '-', '/', '<', '<=', '==', '>', '>=', '^', '|']:
-			self.funcs[op] = lambda a, b: "(%s %s %s)" % (self.__tr(a), op, self.__tr(b))
+		self.funcs = {
+			'!': lambda a: 'not (%s)' % self.__tr(a),
+		}
+
+		for op in ['!=', '*', '**', '+', '-', '/', '<', '<=', '==', '>', '>=']:
+			self.funcs[op] = self.defArith(op)
+		for op in ['%', '&', '^', '|']:
+			self.funcs[op] = self.intArith(op)
+
 		"""self.funcs = {
-			'!': BuiltIn(1, lambda a: Value(not self.__syToBol(a))),
 
 			# List functions
 			'head': BuiltIn(1, self.__head),
@@ -32,5 +37,14 @@ class BuiltIns(object):
 			'import': BuiltIn(1, lambda s: runfile(s.name+FileExt, self.__ev)),
 		}"""
 	
-	def isbuiltin(self, func):
+	def defArith(self, op):
+		return lambda a, b: "(%s %s %s)" % (self.__tr(a), op, self.__tr(b))
+
+	def intArith(self, op):
+		return lambda a, b: "(int(%s) %s int(%s))" % (self.__tr(a), op, self.__tr(b))
+	
+	def __contains__(self, func):
 		return func in self.funcs.keys()
+
+	def __call__(self, key, args):
+		return self.funcs[key](*args)
