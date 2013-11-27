@@ -9,7 +9,18 @@ class BuiltIns(object):
 		self.funcs = {
 			'!': lambda a: 'not (%s)' % self.__tr(a),
 			'if': lambda c, a, b: '%s if %s else %s' % (self.__tr(a), self.__tr(c), self.__tr(b)),
+
+			# List functions
+			'head': lambda lst: '(%s)[0]' % self.__tr(lst),
+			'tail': lambda lst: '(%s)[1:]' % self.__tr(lst),
+			'cons': lambda e, lst2: '[%s] + (%s)' % (self.__tr(e), self.__tr(lst2)),
+			'append': lambda lst1, lst2: '(%s) + (%s)' % (self.__tr(lst1), self.__tr(lst2)),
+			'map': lambda func, lst: 'map(%s, %s)' % (self.__tr(func), self.__tr(lst)),
+			'filter': lambda func, lst: 'filter(%s, %s)' % (self.__tr(func), self.__tr(lst)),
+
+			# Input/Output
 			'print': lambda a: 'print %s' % self.__tr(a),
+			'input': lambda: 'float(raw_input())',
 		}
 
 		for op in ['!=', '*', '**', '+', '-', '/', '<', '<=', '==', '>', '>=']:
@@ -19,17 +30,8 @@ class BuiltIns(object):
 
 		"""self.funcs = {
 
-			# List functions
-			'head': BuiltIn(1, self.__head),
-			'tail': BuiltIn(1, lambda a: List(self.__syToLst(a)[1:])),
-			'cons': BuiltIn(2, lambda h, t: List([self.__ev(h)] + self.__syToLst(t))),
-			'append': BuiltIn(2, lambda a, b: List(self.__syToLst(a) + self.__syToLst(b))),
-			'map': BuiltIn(2, self.__map),
-			'filter': BuiltIn(2, self.__filter),
 			'foldl': BuiltIn(3, self.__foldl),
 
-			# Input/Output
-			'input': BuiltIn(0, lambda: Value(float(raw_input()))),
 
 			# Reading libs TODO: What about a search path?
 			'import': BuiltIn(1, lambda s: runfile(s.name+FileExt, self.__ev)),

@@ -27,4 +27,3 @@ input()				float(raw_input())
 
 import
 Closures (local binds)
-All list stuff

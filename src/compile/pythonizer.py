@@ -12,6 +12,8 @@ class Pythonzier:
 			return symbol
 		if isinstance(symbol, symbols.Func):
 			return "lambda %s: %s" % (", ".join(symbol.args), self.__tr(symbol.dfn))
+		elif isinstance(symbol, symbols.List):
+			return "[%s]" % ", ".join(map(self.__tr, symbol.items))
 		elif isinstance(symbol, symbols.Returnable):
 			return str(symbol)
 		elif isinstance(symbol, symbols.Name):
