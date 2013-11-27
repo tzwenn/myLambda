@@ -4,7 +4,7 @@ import sys
 from parse.parser import buildParseTree
 from compile.pythonizer import Pythonzier
 
-def comp(txt):
+def comp(txt, hideExceptions=True):
 	py = Pythonzier()
 	res = []
 	thereWhereErrs = False
@@ -13,9 +13,16 @@ def comp(txt):
 			try:
 				res.append(py(cmd))
 			except Exception, e:
-				thereWhereErrs = True
-				print "%s: %s" % (type(e).__name__, e)
-	return "\n".join(res), thereWhereErrs
+				if hideExceptions:
+					thereWhereErrs = True
+					sys.stderr.write("%s: %s" % (type(e).__name__, e))
+				else:
+					raise
+	resString = "\n".join(res)
+	if hideExceptions:
+		return resString, thereWhereErrs
+	else:
+		return resString
 
 
 if __name__ == "__main__":

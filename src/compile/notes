@@ -25,5 +25,4 @@ input()				float(raw_input())
 
 ---DISCARDED--
 
-import
 Closures (local binds)

@@ -1,5 +1,7 @@
 # BuiltIn in terms of compiling: Operators, If-Else, etc.
 
+import shareds
+
 class BuiltIns(object):
 
 	def __init__(self, translate):
@@ -21,6 +23,9 @@ class BuiltIns(object):
 			# Input/Output
 			'print': lambda a: 'print %s' % self.__tr(a),
 			'input': lambda: 'float(raw_input())',
+
+
+			'import': self.readFile,
 		}
 
 		for op in ['!=', '*', '**', '+', '-', '/', '<', '<=', '==', '>', '>=']:
@@ -34,9 +39,13 @@ class BuiltIns(object):
 
 
 			# Reading libs TODO: What about a search path?
-			'import': BuiltIn(1, lambda s: runfile(s.name+FileExt, self.__ev)),
 		}"""
-	
+
+	def readFile(self, fileName):
+		from compiler import comp
+		with open(fileName + shareds.FileExt) as f:
+			return comp(f.read(), hideExceptions=False)
+
 	def defArith(self, op):
 		return lambda a, b: "(%s %s %s)" % (self.__tr(a), op, self.__tr(b))
 
